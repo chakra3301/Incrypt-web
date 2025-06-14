@@ -1,0 +1,295 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  /* overflow: hidden; */ /* Removed to allow scrolling */
+  /* height: 100%; */ /* Removed to allow content to extend beyond viewport */
+  min-height: 200vh; /* Ensure the page is scrollable and footer is at the bottom of content */
+  background: black;
+}
+
+body::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: url('../assets/starrynight.png') no-repeat center center fixed;
+  background-size: cover;
+  opacity: 0.5;
+  z-index: 0;
+}
+
+canvas {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+#canvasBackground {
+  z-index: 0;
+}
+
+#matrixCanvas {
+  z-index: 1;
+}
+
+.main-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 20px;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0)); /* Gradient from top black to bottom clear */
+  z-index: 1000; /* Ensure header is above other content */
+  box-sizing: border-box;
+}
+
+.header-logo {
+  height: 100px; /* Increased logo size */
+  margin-right: auto; /* Pushes logo to the far left */
+  filter: brightness(150%); /* Make the logo brighter */
+}
+
+.header-nav {
+  display: flex;
+  flex: 1; /* Allows navigation to take available space */
+  justify-content: center; /* Centers the buttons within the navigation */
+  gap: 50px; /* Space between buttons */
+  transform: translateX(-80px); /* Move buttons slightly to the left */
+}
+
+.nav-button {
+  font-family: "Georgia", serif;
+  font-weight: regular;
+  color: white;
+  text-decoration: none;
+  padding: 10px 15px;
+  /* border: 1px solid white; */ /* Removed border */
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.nav-button:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.main-content {
+  position: absolute;
+  top: 50%; /* Center vertically */
+  left: 50%;
+  transform: translate(-50%, -50%); /* Center the container */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 50; /* Ensure it's above canvases but below header */
+}
+
+.container-bg-img {
+  max-width: 110%; /* Scale down on smaller screens */
+  height: auto;
+  display: block;
+  margin-top: 1%; /* Adjust spacing relatively */
+}
+
+/* Removed .incrypt-title-container and h2 styles */
+
+.incrypt-title-img {
+  position: absolute; /* Position relative to the body */
+  left: 5%; /* Align to the left of the page */
+  top: 85%; /* Adjusted to move slightly higher up above the boxes */
+  width: 90%; /* Max width for positioning */
+  max-width: 400px; /* Adjusted max width of the title image to make it smaller */
+  height: auto;
+  display: block;
+  z-index: 50; /* Same as other content layers */
+}
+
+/* Info Boxes Styling */
+.info-boxes-container {
+  position: absolute; /* Position relative to the body */
+  left: 50%;
+  top: 130%; /* Adjusted to move further down, below the main content */
+  transform: translateX(-50%); /* Center horizontally */
+  display: flex;
+  justify-content: center;
+  align-items: flex-start; /* Align items to the top of the container */
+  gap: 30px; /* Space between boxes */
+  width: 90%; /* Max width for the container */
+  max-width: 1200px; /* Limit max width on very large screens */
+  z-index: 50; /* Same as main-content */
+}
+
+.info-box {
+  flex: 1; /* Allows boxes to grow and shrink */
+  min-width: 280px; /* Minimum width for boxes */
+  max-width: 350px; /* Max width for individual boxes */
+  padding: 20px;
+  background: url('../assets/line.png') no-repeat center center / cover; /* New background image */
+  border-radius: 8px;
+  text-align: center;
+  color: white;
+  position: relative; /* Needed for pseudo-element glow */
+  overflow: hidden; /* Important for glow */
+  box-sizing: border-box; /* Include padding in width/height */
+}
+
+.info-box p {
+  text-align: justify;
+  text-align-last: left;
+}
+
+/* Removed Glowing Outline (::before pseudo-element) */
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 768px) {
+  .main-header {
+    padding: 10px;
+    flex-direction: column; /* Stack logo and nav vertically on small screens */
+    align-items: center;
+    justify-content: center;
+  }
+
+  .header-logo {
+    height: 70px; /* Smaller logo on small screens */
+    margin-right: 0; /* Remove auto margin when stacking */
+    margin-bottom: 10px; /* Add space below logo */
+  }
+
+  .header-nav {
+    gap: 20px; /* Reduce space between buttons on small screens */
+    transform: translateX(0); /* Remove horizontal shift on small screens */
+  }
+
+  .nav-button {
+    padding: 8px 12px;
+  }
+
+  .main-content {
+    width: 90%; /* Make main content narrower on small screens */
+    top: auto; /* Allow natural flow */
+    bottom: 20px; /* Position relative to bottom on small screens */
+    transform: translateX(-50%); /* Only center horizontally */
+  }
+
+  .container-bg-img {
+    max-width: 100%; /* Ensure image fills its container */
+  }
+
+  .incrypt-title-img {
+    position: relative; /* Make it flow with content */
+    top: auto;
+    left: auto;
+    transform: none;
+    width: 90%; /* Adjust width for mobile */
+    max-width: 100%;
+    margin-top: 20px; /* Space from content above */
+    margin-bottom: 10px;
+    text-align: center; /* Center text on small screens */
+  }
+
+  .info-boxes-container {
+    flex-direction: column; /* Stack on phones */
+    align-items: center; /* Center stacked boxes */
+    top: auto; /* Allow natural flow after main content */
+    position: relative; /* Change to relative for normal flow */
+    transform: none; /* Remove transform */
+    width: 90%; /* Wider on small screens */
+    margin-top: 20px; /* Space from content above */
+    margin-bottom: 20px;
+    left: auto;
+  }
+
+  .info-box {
+    width: 100%; /* Full width when stacked */
+    max-width: 400px; /* Limit width even when stacked */
+    margin-bottom: 20px; /* Space between stacked boxes */
+  }
+
+  .info-box:last-child {
+    margin-bottom: 0; /* No bottom margin for the last stacked box */
+  }
+}
+
+.content-spacer {
+  min-height: 180vh; /* Increased significantly to ensure footer is pushed to the very bottom of all content */
+  width: 100%;
+}
+
+footer {
+  width: 100%; /* Restore full width */
+  display: flex; /* Use flexbox for layout */
+  justify-content: space-between; /* Space content to left and right */
+  align-items: flex-end; /* Align items to the bottom of the footer */
+  padding: 50px 20px 20px 20px; /* Adjust padding as needed (top right bottom left) */
+  background-color: transparent; /* Keep background transparent */
+  z-index: 10; /* Lower z-index as it's no longer fixed */
+  position: relative; /* Allow content to push it down */
+  margin-top: 50px; /* Adjust spacing from content above to be positive */
+  bottom: auto; /* Ensure no fixed positioning */
+  left: auto; /* Ensure no fixed positioning */
+}
+
+.footer-image {
+  max-width: 800px; /* Keep it smaller */
+  height: auto;
+  display: block;
+  margin-left: 20px; /* Add margin to push it from the left edge */
+  margin-right: auto; /* Push it to the left, but now flexbox handles it */
+}
+
+.footer-social-links {
+  display: flex; /* Use flexbox for social icons */
+  gap: 30px; /* Increased space between social icons */
+  margin-right: 20px; /* Push from the right edge */
+  align-items: center;
+}
+
+.social-icon {
+  width: 50px; /* Adjusted size of social icons to be slightly bigger */
+  height: auto;
+  display: block;
+}
+#stego-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 100;
+  background: rgba(0, 0, 0, 0.6);
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 0 20px rgba(0,255,0,0.3);
+}
+
+#stego-form input, #stego-form button {
+  padding: 10px 15px;
+  font-size: 16px;
+  margin: 8px 0;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgb(157, 170, 157);
+  color: white;
+  border-radius: 5px;
+  width: 100%;
+  max-width: 300px;
+  box-sizing: border-box;
+}
+
+#stego-form button:hover {
+  background: rgba(0, 255, 0, 0.2);
+  cursor: pointer;
+}
+
+#downloadLink {
+  margin-top: 15px;
+  color: rgb(203, 203, 203);
+  font-weight: bold;
+  text-decoration: underline;
+}
