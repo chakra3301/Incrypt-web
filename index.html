@@ -1,92 +1,110 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Matrix Binary Overlay</title>
-  <link rel="stylesheet" href="./styles/style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Incrypt</title>
+  <link rel="stylesheet" href="./styles/style.css" />
 </head>
 <body>
   <header class="main-header">
-    <img src="./assets/logo.png" alt="Logo" class="header-logo">
+    <img src="./assets/logo.png" alt="Logo" class="header-logo" />
     <nav class="header-nav">
       <a href="#" class="nav-button">GitHub</a>
       <a href="#" class="nav-button">Documentation</a>
       <a href="#" class="nav-button">Twitter</a>
     </nav>
   </header>
-    <canvas id="canvasBackground"></canvas>
-    <canvas id="matrixCanvas"></canvas>
-    <script src="./scripts/background-dots.js"></script>
-    <script src="./scripts/matrix.js"></script>
 
+  <!-- Background Layers -->
+  <canvas id="canvasBackground"></canvas>
+  <canvas id="matrixCanvas"></canvas>
+
+  <!-- Main Interactive Container -->
+  <main class="main-content">
+    <img src="./assets/containerbg.png" alt="Container Background" class="container-bg-img" />
     
-       <div class="main-content">
-        <img src="./assets/containerbg.png" alt="Container Background" class="container-bg-img">
-        <div id="stego-form" style="z-index: 100; margin-top: 20px; text-align: center;">
-          <form id="encodeForm">
-            <input type="text" name="text" placeholder="Enter hidden message" required><br><br>
-            <input type="file" name="image" accept="image/*" required><br><br>
-            <button type="submit">Encode</button>
-          </form>
-          <a id="downloadLink" href="#" style="display:none; color: #0f0; margin-top: 20px;" download="encoded.png">Download Encoded Image</a>
-        </div>
-      </div>
+    <section id="stego-form" style="z-index: 100; margin-top: 20px; text-align: center;">
+      <form id="encodeForm">
+        <input type="text" name="text" placeholder="Enter hidden message" required />
+        <br><br />
+        <input type="file" name="image" accept="image/*" required />
+        <br><br />
+        <button type="submit">Encode</button>
+      </form>
+      <a id="downloadLink" href="#" style="display: none; color: #0f0; margin-top: 20px;" download="encoded.png">
+        Download Encoded Image
+      </a>
+    </section>
+  </main>
 
-  </body>
-  <script>
-    document.addEventListener("DOMContentLoaded", function () {
-      document.getElementById("encodeForm").addEventListener("submit", async function (e) {
-        e.preventDefault();
-        const form = e.target;
-        const formData = new FormData(form);
-  
-        const response = await fetch("https://incrypt-app-2.onrender.com/encode", {
-          method: "POST",
-          body: formData,
-        });
-  
-        if (!response.ok) {
-          alert("Encoding failed: " + (await response.text()));
-          return;
-        }
-  
-        const blob = await response.blob();
-        const url = URL.createObjectURL(blob);
-  
-        const downloadLink = document.getElementById("downloadLink");
-        downloadLink.href = url;
-        downloadLink.style.display = "inline";
-      });
-    });
-  </script>
+  <!-- Title Overlay -->
+  <img src="./assets/incrypt title.png" alt="Incrypt Title" class="incrypt-title-img" />
 
-  <img src="./assets/incrypt title.png" alt="Incrypt Title" class="incrypt-title-img">
-
-  <div class="info-boxes-container">
+  <!-- Info Boxes Section -->
+  <section class="info-boxes-container">
     <div class="info-box">
       <h3>Fractionalized Text NFTs on Zora</h3>
-      <p>We've developed a system that allows anyone to mint and launch fractionalized text-based NFTs on the Zora protocol. These NFTs are uniquely embedded with encrypted or symbolic textual data, enabling both creators and collectors to tokenize written content with provenance, permanence, and tradeability.ilisi.
-    </p>
+      <p>We've developed a system that allows anyone to mint and launch fractionalized text-based NFTs on the Zora protocol. These NFTs are uniquely embedded with encrypted or symbolic textual data, enabling both creators and collectors to tokenize written content with provenance, permanence, and tradeability.</p>
     </div>
     <div class="info-box">
-      <h3>Encrypted Communication Through Art
-</h3>
+      <h3>Encrypted Communication Through Art</h3>
       <p>This platform enables encrypted communication through visual media—allowing individuals, AI models (like LLMs), or communities to embed messages, contract addresses, or signals inside an image. Whether used for covert messaging, creative storytelling, or on-chain proofs of authorship, the potential applications are open-ended.</p>
     </div>
     <div class="info-box">
       <h3>Anti-Snipe Infrastructure for Token Launches & Presales</h3>
       <p>We've integrated anti-sniping mechanics into the platform's encoding process. Because the embedded content (e.g. smart contract address) must be manually decoded via our web portal, this prevents bots from automatically scanning social platforms and front-running launches—offering a new primitive for fair token distribution.</p>
     </div>
-  </div>
+  </section>
 
+  <!-- Footer Spacer -->
   <div class="content-spacer"></div>
 
+  <!-- Footer -->
   <footer>
-    <img src="./assets/404f.png" alt="404 Footer" class="footer-image">
+    <img src="./assets/404f.png" alt="404 Footer" class="footer-image" />
     <div class="footer-social-links">
-      <img src="./assets/github.png" alt="GitHub" class="social-icon">
-      <img src="./assets/x.png" alt="Twitter" class="social-icon">
+      <img src="./assets/github.png" alt="GitHub" class="social-icon" />
+      <img src="./assets/x.png" alt="Twitter" class="social-icon" />
     </div>
   </footer>
 
+  <!-- Scripts at End for Faster Load -->
+  <script src="./scripts/background-dots.js"></script>
+  <script src="./scripts/matrix.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const form = document.getElementById("encodeForm");
+      const downloadLink = document.getElementById("downloadLink");
+
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const formData = new FormData(form);
+
+        try {
+          const response = await fetch("https://incrypt-app-2.onrender.com/encode", {
+            method: "POST",
+            body: formData,
+          });
+
+          if (!response.ok) {
+            const errorText = await response.text();
+            alert("Encoding failed: " + errorText);
+            return;
+          }
+
+          const blob = await response.blob();
+          const url = URL.createObjectURL(blob);
+
+          downloadLink.href = url;
+          downloadLink.style.display = "inline";
+        } catch (err) {
+          alert("Network error or unexpected failure.");
+          console.error(err);
+        }
+      });
+    });
+  </script>
+</body>
 </html>
