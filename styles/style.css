@@ -15,7 +15,7 @@ body::before {
   background: url('./assets/starrynight.png') no-repeat center center fixed;
   background-size: cover;
   opacity: 0.5;
-  z-index: 2;
+  z-index: 2  ;
 }
 
 canvas {
