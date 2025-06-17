@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Decoder</title>
+  <link rel="stylesheet" href="./styles/style.css">
+</head>
+<body>
+  <header class="main-header">
+    <img src="./assets/logo.png" alt="Logo" class="header-logo">
+    <nav class="header-nav">
+      <a href="index.html" class="nav-button">Encoder</a>
+      <a href="decoder.html" class="nav-button">Decoder</a>
+      <a href="#" class="nav-button">Documentation</a>
+    </nav>
+  </header>
+
+  <canvas id="canvasBackground"></canvas>
+  <canvas id="matrixCanvas"></canvas>
+  <script src="./scripts/background-dots.js"></script>
+  <script src="./scripts/matrix.js"></script>
+
+  <div class="main-content">
+    <img src="./assets/containerbg.png" alt="Container Background" class="container-bg-img">
+    <div id="stego-form" style="z-index: 100; margin-top: 20px; text-align: center;">
+      <h2 style="color: white; margin-bottom: 20px;">Decode Hidden Message</h2>
+      <input type="file" id="decodeInputImage" accept="image/*" required>
+      <br><br>
+      <button type="button" onclick="decodeImage()">Decode Message</button>
+      <pre id="decodedText" style="margin-top: 15px; color: #0f0; text-align: left; background: rgba(0,0,0,0.5); padding: 15px; border-radius: 5px;"></pre>
+    </div>
+  </div>
+
+  <div class="info-boxes-container" style="top: 100%;">
+    <div class="info-box">
+      <h3>How to Decode</h3>
+      <p>Simply upload an encoded image and click the decode button. Our system will automatically extract and display any hidden messages embedded within the image using our advanced steganography algorithms.</p>
+    </div>
+    <div class="info-box">
+      <h3>Supported Formats</h3>
+      <p>Our decoder supports various image formats including PNG, JPG, and JPEG. For best results, we recommend using PNG format as it maintains the highest quality for embedded data.</p>
+    </div>
+    <div class="info-box">
+      <h3>Security Features</h3>
+      <p>Each decoded message is verified for integrity and authenticity. Our system ensures that the extracted data hasn't been tampered with since it was originally encoded.</p>
+    </div>
+  </div>
+
+  <div class="content-spacer"></div>
+
+  <footer>
+    <img src="./assets/404f.png" alt="404 Footer" class="footer-image">
+    <div class="footer-social-links">
+      <img src="./assets/github.png" alt="GitHub" class="social-icon">
+      <img src="./assets/x.png" alt="Twitter" class="social-icon">
+    </div>
+  </footer>
+
+  <script>
+    function decodeImage() {
+      const fileInput = document.getElementById('decodeInputImage');
+      if (!fileInput.files[0]) return alert('Please upload an encoded image.');
+
+      const reader = new FileReader();
+      reader.onload = () => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          canvas.width = img.width;
+          canvas.height = img.height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0);
+          const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+          const data = imageData.data;
+
+          const bytes = [];
+          for (let i = 0; i < data.length; i += 8) {
+            let byte = 0;
+            for (let bit = 0; bit < 8; bit++) {
+              byte = (byte << 1) | (data[i + bit] & 1);
+            }
+            if (byte === 0) break;
+            bytes.push(byte);
+          }
+
+          const message = new TextDecoder().decode(new Uint8Array(bytes));
+          document.getElementById('decodedText').textContent = message.trim();
+        };
+        img.src = reader.result;
+      };
+      reader.readAsDataURL(fileInput.files[0]);
+    }
+  </script>
+</body>
+</html> 
