@@ -4,7 +4,7 @@ html, body {
   /* overflow: hidden; */ /* Removed to allow scrolling */
   /* height: 100%; */ /* Removed to allow content to extend beyond viewport */
   min-height: 200vh; /* Ensure the page is scrollable and footer is at the bottom of content */
-  background: black;
+  background: rgb(0, 0, 0);
 }
 
 body::before {
@@ -14,8 +14,9 @@ body::before {
   width: 100%; height: 100%;
   background: url('./assets/starrynight.png') no-repeat center center fixed;
   background-size: cover;
-  opacity: 0.5;
+  opacity: 0.8; /* Increased opacity for more visibility */
   z-index: 0;
+  filter: brightness(0.7); /* Added slight darkening for better contrast */
 }
 
 canvas {
@@ -49,7 +50,7 @@ canvas {
 }
 
 .header-logo {
-  height: 100px; /* Increased logo size */
+  height: 50px; /* Increased logo size */
   margin-right: auto; /* Pushes logo to the far left */
   filter: brightness(150%); /* Make the logo brighter */
 }
@@ -102,7 +103,7 @@ canvas {
   left: 5%; /* Align to the left of the page */
   top: 85%; /* Adjusted to move slightly higher up above the boxes */
   width: 90%; /* Max width for positioning */
-  max-width: 400px; /* Adjusted max width of the title image to make it smaller */
+  max-width: 500px; /* Adjusted max width of the title image to make it smaller */
   height: auto;
   display: block;
   z-index: 50; /* Same as other content layers */
@@ -135,11 +136,19 @@ canvas {
   position: relative; /* Needed for pseudo-element glow */
   overflow: hidden; /* Important for glow */
   box-sizing: border-box; /* Include padding in width/height */
+  font-size: 18px; /* Increased font size */
+}
+
+.info-box h3 {
+  font-size: 24px; /* Increased heading size */
+  margin-bottom: 15px;
 }
 
 .info-box p {
   text-align: justify;
   text-align-last: left;
+  font-size: 16px; /* Increased paragraph font size */
+  line-height: 1.6; /* Improved line height for better readability */
 }
 
 /* Removed Glowing Outline (::before pseudo-element) */
@@ -292,4 +301,27 @@ footer {
   color: rgb(203, 203, 203);
   font-weight: bold;
   text-decoration: underline;
+}
+.slider-group {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  justify-content: flex-start;
+  margin-bottom: 1rem;
+  color: #0f0; /* bright green for visibility */
+  font-weight: bold;
+}
+
+.slider-group label {
+  min-width: 150px;
+  text-align: left;
+}
+
+.center-image {
+  max-width: 90%;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+  border-radius: 8px;
+  
 }

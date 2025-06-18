@@ -9,10 +9,10 @@
 <body>
   <!-- Header -->
   <header class="main-header">
-    <img src="./assets/logo.png" alt="Logo" class="header-logo" />
+    <img src="./assets/clean logo.png" alt="Logo" class="header-logo" />
     <nav class="header-nav">
       <a href="index.html" class="nav-button">Home</a>
-      <a href="about.html" class="nav-button">About</a>
+      <a href="Encoder.html" class="nav-button">Encoder</a>
       <a href="#" class="nav-button">Documentation</a>
     </nav>
   </header>
@@ -23,28 +23,7 @@
 
   <!-- Main Content -->
   <main class="main-content">
-    <img src="./assets/containerbg.png" alt="Container Background" class="container-bg-img" />
-
-    <!-- Steganography Interface -->
-    <section id="stego-form">
-      <input type="text" id="message" placeholder="Enter hidden message" required />
-      <br><br />
-      <input type="file" id="encodeInputImage" accept="image/*" required />
-      <br><br />
-      <button type="button" onclick="encodeImage()">Encode</button>
-
-      <br><br />
-
-      <input type="file" id="decodeInputImage" accept="image/*" />
-      <br><br />
-      <button type="button" onclick="decodeImage()">Decode</button>
-
-      <pre id="decodedText" style="margin-top: 15px; color: #0f0;"></pre>
-
-      <a id="downloadLink" href="#" style="display: none; color: #0f0; margin-top: 20px;" download="encoded.png">
-        Download Encoded Image
-      </a>
-    </section>
+    <img src="./assets/dotlock.png" alt="Mona Lisa" class="center-image" />
   </main>
 
   <!-- Title Image -->
@@ -69,7 +48,7 @@
   <!-- Footer -->
   <div class="content-spacer"></div>
   <footer>
-    <img src="./assets/404f.png" alt="404 Footer" class="footer-image" />
+    <img src="./assets/404.png" alt="404 Footer" class="footer-image" />
     <div class="footer-social-links">
       <img src="./assets/github.png" alt="GitHub" class="social-icon" />
       <img src="./assets/x.png" alt="Twitter" class="social-icon" />
@@ -80,82 +59,6 @@
   <script src="./scripts/background-dots.js"></script>
   <script src="./scripts/matrix.js"></script>
 
-  <!-- Steganography Functions -->
-  <script>
-    function encodeImage() {
-      const fileInput = document.getElementById('encodeInputImage');
-      const message = document.getElementById('message').value;
-      if (!fileInput.files[0] || !message) return alert('Please upload an image and enter a message.');
-
-      const reader = new FileReader();
-      reader.onload = () => {
-        const img = new Image();
-        img.onload = () => {
-          const canvas = document.createElement('canvas');
-          canvas.width = img.width;
-          canvas.height = img.height;
-          const ctx = canvas.getContext('2d');
-          ctx.drawImage(img, 0, 0);
-          const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-          const data = imageData.data;
-
-          const bytes = new TextEncoder().encode(message + '\0');
-          if (bytes.length * 8 > data.length) return alert("Message too long for this image.");
-
-          let dataIndex = 0;
-          for (let byte of bytes) {
-            for (let bit = 7; bit >= 0; bit--) {
-              data[dataIndex] = (data[dataIndex] & 0xFE) | ((byte >> bit) & 1);
-              dataIndex++;
-            }
-          }
-
-          ctx.putImageData(imageData, 0, 0);
-          canvas.toBlob(blob => {
-            const url = URL.createObjectURL(blob);
-            const link = document.getElementById('downloadLink');
-            link.href = url;
-            link.style.display = 'inline';
-          }, 'image/png');
-        };
-        img.src = reader.result;
-      };
-      reader.readAsDataURL(fileInput.files[0]);
-    }
-
-    function decodeImage() {
-      const fileInput = document.getElementById('decodeInputImage');
-      if (!fileInput.files[0]) return alert('Please upload an encoded image.');
-
-      const reader = new FileReader();
-      reader.onload = () => {
-        const img = new Image();
-        img.onload = () => {
-          const canvas = document.createElement('canvas');
-          canvas.width = img.width;
-          canvas.height = img.height;
-          const ctx = canvas.getContext('2d');
-          ctx.drawImage(img, 0, 0);
-          const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-          const data = imageData.data;
-
-          const bytes = [];
-          for (let i = 0; i < data.length; i += 8) {
-            let byte = 0;
-            for (let bit = 0; bit < 8; bit++) {
-              byte = (byte << 1) | (data[i + bit] & 1);
-            }
-            if (byte === 0) break;
-            bytes.push(byte);
-          }
-
-          const message = new TextDecoder().decode(new Uint8Array(bytes));
-          document.getElementById('decodedText').textContent = message.trim();
-        };
-        img.src = reader.result;
-      };
-      reader.readAsDataURL(fileInput.files[0]);
-    }
-  </script>
+ 
 </body>
 </html>
