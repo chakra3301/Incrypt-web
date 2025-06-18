@@ -1,59 +1,379 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>About Incrypt</title>
-  <link rel="stylesheet" href="./styles/style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      background: #111;
+      color: #eee;
+      font-family: sans-serif;
+      text-align: center;
+      padding: 2rem;
+      margin: 0;
+      overflow-x: hidden;
+    }
+    .header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 20px;
+      background: linear-gradient(to bottom, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0));
+      z-index: 1000;
+      box-sizing: border-box;
+    }
+    .header-logo {
+      height: 50px;
+      margin-right: auto;
+      filter: brightness(150%);
+    }
+    .header-nav {
+      display: flex;
+      gap: 50px;
+    }
+    .nav-button {
+      font-family: "Georgia", serif;
+      color: white;
+      text-decoration: none;
+      padding: 10px 15px;
+      border-radius: 5px;
+      transition: background-color 0.3s ease;
+    }
+    .nav-button:hover {
+      background-color: rgba(255, 255, 255, 0.2);
+    }
+    #matrixCanvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: -1;
+    }
+    canvas {
+      border: 1px solid #555;
+      margin-top: 0.5rem;
+    }
+    input, textarea, button, label {
+      margin: 0.5rem;
+      padding: 0.5rem;
+      z-index: 3;
+    }
+    .controls {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+    }
+    .slider-group {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+    }
+    .title-image {
+      max-width: 30%;
+      height: auto;
+      margin: -100px;
+      z-index: 0;
+      filter: drop-shadow(0 0 8px rgba(0, 255, 0, 0.3));
+      transition: all 0.3s ease;
+    }
+    .title-image:hover {
+      filter: drop-shadow(0 0 12px rgba(0, 255, 0, 0.5));
+      transform: scale(1.02);
+    }
+    .advanced-menu {
+      display: none;
+      background: rgba(0, 0, 0, 0.8);
+      padding: 1rem;
+      border-radius: 8px;
+      margin: 1rem 0;
+      border: 1px solid rgba(0, 255, 0, 0.3);
+    }
+    .advanced-menu.show {
+      display: block;
+    }
+    .advanced-toggle {
+      background: rgba(0, 255, 0, 0.1);
+      border: 1px solid rgba(0, 255, 0, 0.3);
+      color: #0f0;
+      padding: 0.5rem 1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .advanced-toggle:hover {
+      background: rgba(0, 255, 0, 0.2);
+    }
+    .action-buttons {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      margin: 1rem 0;
+    }
+    .action-button {
+      background: rgba(0, 255, 0, 0.1);
+      border: 1px solid rgba(0, 255, 0, 0.3);
+      color: #0f0;
+      padding: 0.5rem 1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .action-button:hover {
+      background: rgba(0, 255, 0, 0.2);
+    }
+    .output-box {
+      background: rgba(0, 0, 0, 0.8);
+      border: 1px solid rgba(0, 255, 0, 0.3);
+      color: #0f0;
+      padding: 1rem;
+      margin: 1rem 0;
+      border-radius: 8px;
+      min-height: 50px;
+      display: none;
+    }
+    .output-box.show {
+      display: block;
+    }
+  </style>
 </head>
 <body>
-  <header class="main-header">
-    <img src="./assets/logo.png" alt="Logo" class="header-logo">
+  <!-- Header -->
+  <header class="header">
+    <img src="./assets/clean logo.png" alt="Logo" class="header-logo" />
     <nav class="header-nav">
       <a href="index.html" class="nav-button">Home</a>
-      <a href="about.html" class="nav-button">About</a>
-      <a href="#" class="nav-button">Documentation</a>
     </nav>
   </header>
 
-  <canvas id="canvasBackground"></canvas>
   <canvas id="matrixCanvas"></canvas>
-  <script src="./scripts/background-dots.js"></script>
-  <script src="./scripts/matrix.js"></script>
+  <img src="assets/incrypt title.png" alt="Incrypt" class="title-image">
+  <div class="controls">
+    <input type="file" id="portraitInput" accept="image/*">
+    <textarea id="textMessage" rows="4" cols="50" placeholder="Enter your secret message"></textarea>
 
-  <div class="main-content">
-    <img src="./assets/containerbg.png" alt="Container Background" class="container-bg-img">
-    <div class="about-content" style="z-index: 100; margin-top: 20px; text-align: center; color: white; padding: 20px;">
-      <h2 style="font-size: 2em; margin-bottom: 20px;">About Incrypt</h2>
-      <p style="max-width: 800px; margin: 0 auto; text-align: justify; line-height: 1.6;">
-        Incrypt is a revolutionary platform that combines the power of blockchain technology with innovative steganography techniques. 
-        Our mission is to provide secure, decentralized solutions for digital content protection and communication.
-      </p>
+    <button class="advanced-toggle" onclick="toggleAdvanced()">Advanced Settings</button>
+    
+    <div class="advanced-menu" id="advancedMenu">
+      <div class="slider-group">
+        <label for="dotSlider">Dots</label>
+        <input type="range" id="dotSlider" min="100" max="20000" value="5000">
+        <span id="dotVal">5000</span>
+      </div>
+
+      <div class="slider-group">
+        <label for="jitterSlider">Jitter</label>
+        <input type="range" id="jitterSlider" min="0" max="30" value="6">
+        <span id="jitterVal">6</span>
+      </div>
+
+      <div class="slider-group">
+        <label for="bitSlider">Bit Depth</label>
+        <input type="range" id="bitSlider" min="1" max="8" value="1">
+        <span id="bitVal">1</span>
+      </div>
+
+      <div class="slider-group">
+        <label for="modeToggle">Use pointillist mode</label>
+        <input type="checkbox" id="modeToggle">
+      </div>
     </div>
+
+    <div class="action-buttons">
+      <button class="action-button" onclick="encode()">Encode</button>
+      <button class="action-button" onclick="decode()">Decode</button>
+    </div>
+    <div id="outputBox" class="output-box"></div>
+    <a id="downloadLink" style="color: lime;"></a>
   </div>
+  <canvas id="canvas" width="512" height="512"></canvas>
 
-  <div class="info-boxes-container" style="top: 100%;">
-    <div class="info-box">
-      <h3>Our Technology</h3>
-      <p>We utilize advanced steganography algorithms combined with blockchain technology to create a unique system for secure data embedding and verification. Our platform ensures that your digital content remains protected while maintaining its accessibility and usability.</p>
-    </div>
-    <div class="info-box">
-      <h3>Security First</h3>
-      <p>Security is at the core of everything we do. Our platform implements multiple layers of encryption and verification to ensure that your data remains secure and tamper-proof, whether it's being stored, transmitted, or accessed.</p>
-    </div>
-    <div class="info-box">
-      <h3>Future Vision</h3>
-      <p>We're constantly evolving and expanding our platform's capabilities. Our roadmap includes enhanced AI integration, improved verification systems, and expanded blockchain compatibility to meet the growing needs of our users.</p>
-    </div>
-  </div>
+  <script>
+    // Add toggle function for advanced menu
+    function toggleAdvanced() {
+      const menu = document.getElementById('advancedMenu');
+      menu.classList.toggle('show');
+    }
+    
+    // Matrix background animation
+    const matrixCanvas = document.getElementById('matrixCanvas');
+    const matrixCtx = matrixCanvas.getContext('2d');
 
-  <div class="content-spacer"></div>
+    matrixCanvas.width = window.innerWidth;
+    matrixCanvas.height = window.innerHeight;
 
-  <footer>
-    <img src="./assets/404f.png" alt="404 Footer" class="footer-image">
-    <div class="footer-social-links">
-      <img src="./assets/github.png" alt="GitHub" class="social-icon">
-      <img src="./assets/x.png" alt="Twitter" class="social-icon">
-    </div>
-  </footer>
+    const fontSize = 16;
+    const columns = Math.floor(matrixCanvas.width / fontSize);
+    const drops = Array(columns).fill(1);
+
+    const characters = 'アカサタナハマヤラワガザダバパABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'.split('');
+
+    let frameCounter = 0;
+    const updateRate = 4; 
+
+    function drawMatrix() {
+      if (frameCounter % updateRate !== 0) {
+        requestAnimationFrame(drawMatrix);
+        frameCounter++;
+        return;
+      }
+
+      matrixCtx.fillStyle = "rgba(0, 0, 0, 0.05)";
+      matrixCtx.fillRect(0, 0, matrixCanvas.width, matrixCanvas.height);
+
+      matrixCtx.font = `${fontSize}px monospace`;
+
+      for (let i = 0; i < columns; i++) {
+        const char = characters[Math.floor(Math.random() * characters.length)];
+        const flicker = Math.random() < 0.003;
+
+        if (flicker) {
+          matrixCtx.fillStyle = 'rgba(255, 255, 255, 0.4)';
+          matrixCtx.shadowBlur = 4;
+          matrixCtx.shadowColor = '#ffffff';
+        } else {
+          matrixCtx.fillStyle = 'rgba(200, 200, 200, 0.15)';
+          matrixCtx.shadowBlur = 0;
+        }
+
+        matrixCtx.fillText(char, i * fontSize, drops[i] * fontSize);
+
+        if (drops[i] * fontSize > matrixCanvas.height && Math.random() > 0.975) {
+          drops[i] = 0;
+        }
+        drops[i]++;
+      }
+
+      frameCounter++;
+      requestAnimationFrame(drawMatrix);
+    }
+
+    drawMatrix();
+
+    window.addEventListener('resize', () => {
+      matrixCanvas.width = window.innerWidth;
+      matrixCanvas.height = window.innerHeight;
+    });
+
+    const canvas = document.getElementById("canvas");
+    const ctx = canvas.getContext("2d");
+    let uploadedImage = null;
+
+    // Slider displays
+    const dotSlider = document.getElementById("dotSlider");
+    const jitterSlider = document.getElementById("jitterSlider");
+    const bitSlider = document.getElementById("bitSlider");
+    document.getElementById("dotVal").textContent = dotSlider.value;
+    document.getElementById("jitterVal").textContent = jitterSlider.value;
+    document.getElementById("bitVal").textContent = bitSlider.value;
+
+    dotSlider.oninput = () => document.getElementById("dotVal").textContent = dotSlider.value;
+    jitterSlider.oninput = () => document.getElementById("jitterVal").textContent = jitterSlider.value;
+    bitSlider.oninput = () => document.getElementById("bitVal").textContent = bitSlider.value;
+
+    document.getElementById("portraitInput").addEventListener("change", e => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = ev => {
+        const img = new Image();
+        img.onload = () => {
+          uploadedImage = img;
+          generateCanvas(img);
+        };
+        img.src = ev.target.result;
+      };
+      reader.readAsDataURL(file);
+    });
+
+    function generateCanvas(image) {
+      const usePointillist = document.getElementById("modeToggle").checked;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      if (!usePointillist) {
+        ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+        return;
+      }
+
+      const temp = document.createElement('canvas');
+      temp.width = image.width;
+      temp.height = image.height;
+      const tCtx = temp.getContext('2d');
+      tCtx.drawImage(image, 0, 0);
+      const imgData = tCtx.getImageData(0, 0, image.width, image.height).data;
+
+      const dots = parseInt(dotSlider.value);
+      const jitter = parseInt(jitterSlider.value);
+
+      for (let i = 0; i < dots; i++) {
+        const x = Math.random() * canvas.width;
+        const y = Math.random() * canvas.height;
+        const srcX = Math.floor((x / canvas.width) * image.width);
+        const srcY = Math.floor((y / canvas.height) * image.height);
+        const idx = (srcY * image.width + srcX) * 4;
+
+        let r = imgData[idx];
+        let g = imgData[idx + 1];
+        let b = imgData[idx + 2];
+
+        r = Math.min(255, Math.max(0, r + (Math.random() * jitter - jitter / 2)));
+        g = Math.min(255, Math.max(0, g + (Math.random() * jitter - jitter / 2)));
+        b = Math.min(255, Math.max(0, b + (Math.random() * jitter - jitter / 2)));
+
+        ctx.fillStyle = `rgb(${r},${g},${b})`;
+        ctx.beginPath();
+        ctx.arc(x, y, 1, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    function encode() {
+      if (!uploadedImage) return;
+      const message = document.getElementById("textMessage").value;
+      const bits = parseInt(bitSlider.value);
+      const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      const data = imgData.data;
+
+      const bytes = new TextEncoder().encode(message);
+      const bitsArray = [];
+      for (let byte of bytes) {
+        for (let i = 7; i >= 0; i--) bitsArray.push((byte >> i) & 1);
+      }
+
+      for (let i = 0; i < bitsArray.length; i++) {
+        const byteIndex = i;
+        if (byteIndex >= data.length) break;
+        data[byteIndex] = (data[byteIndex] & ~(1)) | bitsArray[i];
+      }
+
+      ctx.putImageData(imgData, 0, 0);
+
+      const link = document.getElementById("downloadLink");
+      link.href = canvas.toDataURL();
+      link.download = "stego_image.png";
+      link.innerText = "Download Image";
+    }
+
+    function decode() {
+      const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      const data = imgData.data;
+      const bits = parseInt(bitSlider.value);
+
+      const bitsExtracted = [];
+      for (let i = 0; i < 8000; i++) bitsExtracted.push(data[i] & 1);
+
+      const bytes = [];
+      for (let i = 0; i < bitsExtracted.length; i += 8) {
+        const byte = bitsExtracted.slice(i, i + 8).reduce((acc, bit, j) => acc | (bit << (7 - j)), 0);
+        bytes.push(byte);
+      }
+
+      const msg = new TextDecoder().decode(new Uint8Array(bytes));
+      const outputBox = document.getElementById('outputBox');
+      outputBox.textContent = msg;
+      outputBox.classList.add('show');
+    }
+  </script>
 </body>
-</html> 
+</html>
