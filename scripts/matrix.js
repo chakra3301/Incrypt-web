@@ -8,14 +8,14 @@ const fontSize = 16;
 const columns = Math.floor(canvas.width / fontSize);
 const drops = Array(columns).fill(1);
 
-// Matte grayscale character pool: Japanese + alphanumeric
+
 const characters = 'アカサタナハマヤラワガザダバパABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'.split('');
 
 let frameCounter = 0;
-const updateRate = 4; // slower update rate for terminal drip
+const updateRate = 4; 
 
 function draw() {
-  // Skip frames for slowdown
+
   if (frameCounter % updateRate !== 0) {
     requestAnimationFrame(draw);
     frameCounter++;
