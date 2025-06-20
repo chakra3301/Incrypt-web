@@ -410,7 +410,7 @@ footer {
   height: auto;
   display: block;
   margin: 0 auto;
-  margin-top: -750px; /* Move the image higher up on the page */
+  margin-top: -760px; /* Move the image higher up on the page */
   border-radius: 8px;
 }
 
@@ -418,13 +418,13 @@ footer {
 @media (max-width: 768px) {
   .center-image {
     max-width: 70%;
-    margin-top: -400px;
+    margin-top: -100px; /* Position below the header on tablets */
   }
 }
 
 @media (max-width: 480px) {
   .center-image {
     max-width: 85%;
-    margin-top: -700px;
+    margin-top: -750px; /* Position below the header on mobile */
   }
 }
