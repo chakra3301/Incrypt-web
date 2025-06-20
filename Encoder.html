@@ -63,6 +63,7 @@
     @media (max-width: 768px) {
       .header {
         padding: 8px 15px;
+        background: rgb(0, 0, 0);
       }
     }
     
@@ -71,6 +72,7 @@
         padding: 5px 10px;
         flex-direction: column;
         gap: 10px;
+        background: rgb(0, 0, 0);
       }
     }
     
@@ -96,19 +98,24 @@
     
     .header-nav {
       display: flex;
+      flex: 1;
+      justify-content: center;
       gap: 50px;
+      transform: translateX(-20px);
     }
     
     /* Responsive navigation */
     @media (max-width: 768px) {
       .header-nav {
         gap: 30px;
+        transform: translateX(-15px);
       }
     }
     
     @media (max-width: 480px) {
       .header-nav {
         gap: 20px;
+        transform: translateX(-10px);
       }
     }
     
@@ -159,6 +166,9 @@
       margin-top: 0.5rem;
       max-width: 100%;
       height: auto;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
     }
     
     /* Responsive canvas */
@@ -589,7 +599,7 @@
     <div id="outputBox" class="output-box"></div>
     <a id="downloadLink" style="color: rgb(188, 188, 188);"></a>
   </div>
-  <canvas id="canvas" width="512" height="512"></canvas>
+  <canvas id="canvas"></canvas>
 
   <script>
     // Add toggle function for advanced menu
@@ -662,6 +672,31 @@
     const ctx = canvas.getContext("2d");
     let uploadedImage = null;
   
+    // Function to resize canvas to fit uploaded image
+    function resizeCanvasToImage(image) {
+      // Calculate maximum dimensions while maintaining aspect ratio
+      const maxWidth = Math.min(800, window.innerWidth - 100);
+      const maxHeight = Math.min(600, window.innerHeight - 200);
+      
+      let newWidth = image.width;
+      let newHeight = image.height;
+      
+      // Scale down if image is too large
+      if (newWidth > maxWidth || newHeight > maxHeight) {
+        const scale = Math.min(maxWidth / newWidth, maxHeight / newHeight);
+        newWidth = Math.floor(newWidth * scale);
+        newHeight = Math.floor(newHeight * scale);
+      }
+      
+      // Set canvas dimensions
+      canvas.width = newWidth;
+      canvas.height = newHeight;
+      
+      // Update canvas CSS for responsive display
+      canvas.style.maxWidth = '100%';
+      canvas.style.height = 'auto';
+    }
+  
     // Slider displays
     const dotSlider = document.getElementById("dotSlider");
     const jitterSlider = document.getElementById("jitterSlider");
@@ -682,6 +717,7 @@
         const img = new Image();
         img.onload = () => {
           uploadedImage = img;
+          resizeCanvasToImage(img);
           generateCanvas(img);
         };
         img.src = ev.target.result;
