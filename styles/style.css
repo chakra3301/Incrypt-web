@@ -425,6 +425,6 @@ footer {
 @media (max-width: 480px) {
   .center-image {
     max-width: 85%;
-    margin-top: -750px; /* Position below the header on mobile */
+    margin-top: 100px; /* Position below the header on mobile */
   }
 }
