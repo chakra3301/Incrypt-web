@@ -262,21 +262,21 @@ html, body {
 }
 
 .info-box h3 {
-  font-size: 24px; /* Increased heading size */
+  font-size: 18px;
   margin-bottom: 15px;
 }
 
 /* Responsive info box headings */
 @media (max-width: 768px) {
   .info-box h3 {
-    font-size: 20px;
+    font-size: 16px;
     margin-bottom: 12px;
   }
 }
 
 @media (max-width: 480px) {
   .info-box h3 {
-    font-size: 18px;
+    font-size: 14px;
     margin-bottom: 10px;
   }
 }
