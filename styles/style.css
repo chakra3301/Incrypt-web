@@ -8,6 +8,8 @@ html, body {
   overflow-x: hidden; /* Prevent horizontal scrolling */
   width: 100%;
   box-sizing: border-box;
+  font-family: 'Orbitron', monospace;
+  font-weight: 300;
 }
 
 /* Responsive body adjustments */
@@ -120,8 +122,8 @@ html, body {
 }
 
 .nav-button {
-  font-family: "Georgia", serif;
-  font-weight: regular;
+  font-family: 'Orbitron', monospace;
+  font-weight: 300;
   color: white;
   text-decoration: none;
   padding: 10px 15px;
