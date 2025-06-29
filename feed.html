@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Feed - Incrypt</title>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@300&display=swap" rel="stylesheet">
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="./assets/favicon.png" />
+  <link rel="shortcut icon" type="image/png" href="./assets/favicon.png" />
+  
+  <!-- Open Graph Meta Tags for Social Media Preview -->
+  <meta property="og:title" content="Incrypt Feed - Share Your Encoded Images" />
+  <meta property="og:description" content="Upload and share your encoded images with the Incrypt community. Discover hidden messages in art." />
+  <meta property="og:image" content="./assets/preview.png" />
+  <meta property="og:url" content="" />
+  <meta property="og:type" content="website" />
+  
+  <!-- Twitter Card Meta Tags -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Incrypt Feed - Share Your Encoded Images" />
+  <meta name="twitter:description" content="Upload and share your encoded images with the Incrypt community. Discover hidden messages in art." />
+  <meta name="twitter:image" content="./assets/preview.png" />
+  
+  <link rel="stylesheet" href="./styles/style.css" />
+  <script src="./config.js"></script>
+  <style>
+    body {
+      background: #111;
+      color: #eee;
+      font-family: 'Orbitron', monospace;
+      font-weight: 300;
+      text-align: center;
+      padding: 2rem;
+      margin: 0;
+      overflow-x: hidden;
+    }
+    
+    /* Responsive padding for body */
+    @media (max-width: 768px) {
+      body {
+        padding: 1rem;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      body {
+        padding: 0.5rem;
+      }
+    }
+    
+    .header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 20px;
+      background: #11111145;
+      z-index: 1000;
+      box-sizing: border-box;
+    }
+    
+    /* Responsive header */
+    @media (max-width: 768px) {
+      .header {
+        padding: 8px 15px;
+        background: #111;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .header {
+        padding: 5px 10px;
+        flex-direction: column;
+        gap: 10px;
+        background: #111;
+      }
+    }
+    
+    .header-logo {
+      height: 50px;
+      margin-right: auto;
+      filter: brightness(150%);
+    }
+    
+    /* Responsive logo */
+    @media (max-width: 768px) {
+      .header-logo {
+        height: 40px;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .header-logo {
+        height: 35px;
+        margin-right: 0;
+      }
+    }
+    
+    .header-nav {
+      display: flex;
+      flex: 1;
+      justify-content: center;
+      gap: 50px;
+    }
+    
+    /* Responsive navigation */
+    @media (max-width: 768px) {
+      .header-nav {
+        gap: 30px;
+        justify-content: center;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .header-nav {
+        gap: 20px;
+        justify-content: center;
+        width: 100%;
+      }
+    }
+    
+    .nav-button {
+      font-family: 'Orbitron', monospace;
+      font-weight: 300;
+      color: white;
+      text-decoration: none;
+      padding: 10px 15px;
+      border-radius: 5px;
+      transition: background-color 0.3s ease;
+    }
+    
+    /* Responsive nav buttons */
+    @media (max-width: 768px) {
+      .nav-button {
+        padding: 12px 12px;
+        font-size: 14px;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .nav-button {
+        padding: 10px 10px;
+        font-size: 12px;
+      }
+    }
+    
+    .nav-button:hover {
+      background-color: rgba(255, 255, 255, 0.2);
+    }
+    
+    #matrixCanvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: -1;
+    }
+    
+    /* Hide matrix on mobile devices */
+    @media (max-width: 768px) {
+      #matrixCanvas {
+        display: none;
+      }
+    }
+    
+    .feed-container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+      margin-top: 100px;
+    }
+    
+    /* Responsive feed container */
+    @media (max-width: 768px) {
+      .feed-container {
+        padding: 15px;
+        margin-top: 80px;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .feed-container {
+        padding: 10px;
+        margin-top: 70px;
+      }
+    }
+    
+    .feed-posts {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    
+    .post {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      transition: transform 0.3s ease;
+    }
+    
+    .post:hover {
+      transform: translateY(-2px);
+    }
+    
+    .post-header {
+      padding: 15px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    /* Responsive post header */
+    @media (max-width: 768px) {
+      .post-header {
+        padding: 12px;
+      }
+    }
+    
+    .post-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: rgba(188, 188, 188, 0.2);
+      border: 1px solid rgba(188, 188, 188, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      color: rgb(188, 188, 188);
+      overflow: hidden;
+    }
+    
+    .post-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    .post-user {
+      font-weight: 500;
+      font-size: 14px;
+    }
+    
+    .post-timestamp {
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.6);
+      margin-left: auto;
+    }
+    
+    .post-image {
+      width: 100%;
+      max-height: 500px;
+      object-fit: cover;
+    }
+    
+    .post-content {
+      padding: 15px;
+    }
+    
+    /* Responsive post content */
+    @media (max-width: 768px) {
+      .post-content {
+        padding: 12px;
+      }
+    }
+    
+    .post-description {
+      font-size: 14px;
+      line-height: 1.5;
+      margin-bottom: 10px;
+    }
+    
+    .post-actions {
+      display: flex;
+      gap: 15px;
+      padding: 10px 15px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    
+    /* Responsive post actions */
+    @media (max-width: 768px) {
+      .post-actions {
+        gap: 10px;
+        padding: 8px 12px;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .post-actions {
+        gap: 8px;
+        padding: 6px 10px;
+        flex-direction: column;
+        align-items: center;
+      }
+    }
+    
+    .action-button {
+      background: rgba(188, 188, 188, 0.1);
+      border: 1px solid rgba(188, 188, 188, 0.3);
+      color: rgb(188, 188, 188);
+      padding: 0.5rem 1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      white-space: nowrap;
+      font-family: 'Orbitron', monospace;
+      font-weight: 300;
+      font-size: 12px;
+      border-radius: 5px;
+    }
+    
+    /* Responsive action buttons */
+    @media (max-width: 768px) {
+      .action-button {
+        padding: 0.4rem 0.8rem;
+        font-size: 12px;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .action-button {
+        padding: 0.3rem 0.6rem;
+        font-size: 11px;
+        width: 100%;
+        max-width: 200px;
+      }
+    }
+    
+    .action-button:hover {
+      background: rgba(187, 187, 187, 0.2);
+    }
+    
+    .empty-feed {
+      text-align: center;
+      padding: 60px 20px;
+      color: rgba(255, 255, 255, 0.6);
+    }
+    
+    .empty-feed h3 {
+      margin-bottom: 10px;
+      font-size: 18px;
+    }
+    
+    .empty-feed p {
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <img src="./assets/clean logo.png" alt="Logo" class="header-logo" />
+    <nav class="header-nav">
+      <a href="index.html" class="nav-button">Home</a>
+      <a href="Encoder.html" class="nav-button">Encoder</a>
+      <a href="feed.html" class="nav-button">Feed</a>
+      <a href="documentation.html" class="nav-button">Documentation</a>
+    </nav>
+  </header>
+
+  <canvas id="matrixCanvas"></canvas>
+
+  <div class="feed-container">
+    <!-- Feed Posts -->
+    <div class="feed-posts" id="feedPosts">
+      <!-- Posts will be dynamically added here -->
+    </div>
+  </div>
+
+  <script>
+    // Matrix background animation
+    const matrixCanvas = document.getElementById('matrixCanvas');
+    const matrixCtx = matrixCanvas.getContext('2d');
+
+    matrixCanvas.width = window.innerWidth;
+    matrixCanvas.height = window.innerHeight;
+
+    const fontSize = 16;
+    const columns = Math.floor(matrixCanvas.width / fontSize);
+    const drops = Array(columns).fill(1);
+
+    const characters = 'アカサタナハマヤラワガザダバパABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'.split('');
+
+    let frameCounter = 0;
+    const updateRate = 4;
+
+    function drawMatrix() {
+      if (frameCounter % updateRate !== 0) {
+        requestAnimationFrame(drawMatrix);
+        frameCounter++;
+        return;
+      }
+
+      matrixCtx.fillStyle = "rgba(0, 0, 0, 0.05)";
+      matrixCtx.fillRect(0, 0, matrixCanvas.width, matrixCanvas.height);
+
+      matrixCtx.font = `${fontSize}px monospace`;
+
+      for (let i = 0; i < columns; i++) {
+        const char = characters[Math.floor(Math.random() * characters.length)];
+        const flicker = Math.random() < 0.003;
+
+        if (flicker) {
+          matrixCtx.fillStyle = 'rgba(255, 255, 255, 0.4)';
+          matrixCtx.shadowBlur = 4;
+          matrixCtx.shadowColor = '#ffffff';
+        } else {
+          matrixCtx.fillStyle = 'rgba(200, 200, 200, 0.15)';
+          matrixCtx.shadowBlur = 0;
+        }
+
+        matrixCtx.fillText(char, i * fontSize, drops[i] * fontSize);
+
+        if (drops[i] * fontSize > matrixCanvas.height && Math.random() > 0.975) {
+          drops[i] = 0;
+        }
+        drops[i]++;
+      }
+
+      frameCounter++;
+      requestAnimationFrame(drawMatrix);
+    }
+
+    drawMatrix();
+
+    window.addEventListener('resize', () => {
+      matrixCanvas.width = window.innerWidth;
+      matrixCanvas.height = window.innerHeight;
+    });
+
+    // Store posts in memory
+    let posts = [];
+    
+    // DOM elements
+    const feedPosts = document.getElementById('feedPosts');
+    
+    // Generate upload number for comments
+    function generateUploadNumber() {
+      const uploadCount = posts.length + 1;
+      return uploadCount.toString().padStart(5, '0');
+    }
+    
+    // Fetch posts from API
+    async function fetchPosts() {
+      try {
+        const response = await fetch('/api/posts');
+        if (response.ok) {
+          posts = await response.json();
+          renderFeed();
+        } else {
+          console.error('Failed to fetch posts');
+          renderFeed(); // Show empty state
+        }
+      } catch (error) {
+        console.error('Error fetching posts:', error);
+        renderFeed(); // Show empty state
+      }
+    }
+    
+    // Render feed posts
+    function renderFeed() {
+      if (posts.length === 0) {
+        feedPosts.innerHTML = `
+          <div class="empty-feed">
+            <h3>No Posts Yet</h3>
+            <p>Be the first to share an encoded image from the Encoder page!</p>
+          </div>
+        `;
+        return;
+      }
+      
+      feedPosts.innerHTML = posts.map(post => `
+        <div class="post" data-post-id="${post.id}">
+          <div class="post-header">
+            <div class="post-avatar">
+              <img src="./assets/dotlock.png" alt="User Avatar">
+            </div>
+            <div class="post-user">Upload #${post.user}</div>
+            <div class="post-timestamp">${formatTimestamp(post.timestamp)}</div>
+          </div>
+          <img src="${post.image}" alt="Encoded Image" class="post-image">
+          <div class="post-content">
+            <div class="post-description">${post.description}</div>
+          </div>
+          <div class="post-actions">
+            <button class="action-button" onclick="likePost(${post.id})">
+              ${post.likes} Like${post.likes !== 1 ? 's' : ''}
+            </button>
+            <button class="action-button" onclick="commentPost(${post.id})">
+              Comment
+            </button>
+            <button class="action-button" onclick="downloadImage('${post.image}', 'encoded-image-${post.id}')">
+              Download
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+    
+    // Format timestamp
+    function formatTimestamp(timestamp) {
+      const date = new Date(timestamp);
+      const now = new Date();
+      const diffInMinutes = Math.floor((now - date) / (1000 * 60));
+      
+      if (diffInMinutes < 1) return 'Just now';
+      if (diffInMinutes < 60) return `${diffInMinutes}m ago`;
+      if (diffInMinutes < 1440) return `${Math.floor(diffInMinutes / 60)}h ago`;
+      return date.toLocaleDateString();
+    }
+    
+    // Like post
+    function likePost(postId) {
+      const post = posts.find(p => p.id === postId);
+      if (post) {
+        post.likes++;
+        fetchPosts();
+      }
+    }
+    
+    // Comment post (placeholder)
+    function commentPost(postId) {
+      const comment = prompt('Add a comment:');
+      if (comment && comment.trim()) {
+        const post = posts.find(p => p.id === postId);
+        if (post) {
+          const commentUploadNumber = generateUploadNumber();
+          post.comments.push({
+            user: commentUploadNumber,
+            text: comment.trim(),
+            timestamp: new Date().toISOString()
+          });
+          fetchPosts();
+        }
+      }
+    }
+    
+    // Download image
+    function downloadImage(imageSrc, filename) {
+      const link = document.createElement('a');
+      link.href = imageSrc;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+    
+    // Initialize feed on page load
+    fetchPosts();
+    
+    // Auto-refresh feed every 30 seconds
+    setInterval(fetchPosts, 30000);
+  </script>
+</body>
+</html> 
