@@ -26,6 +26,8 @@
   <meta name="twitter:description" content="Upload an image and hide secret messages using LSB steganography. Client-side processing ensures your data never leaves your device." />
   <meta name="twitter:image" content="./assets/preview.png" />
   
+  <link rel="stylesheet" href="./styles/style.css" />
+  
   <style>
     body {
       background: #111;
@@ -60,7 +62,7 @@
       align-items: center;
       justify-content: space-between;
       padding: 10px 20px;
-      background: #111;
+      background: #11111145;
       z-index: 1000;
       box-sizing: border-box;
     }
@@ -411,19 +413,72 @@
     }
     
     .output-box {
-      background: rgba(0, 0, 0, 0.8);
-      border: 1px solid rgba(187, 187, 187, 0.3);
-      color: rgb(188, 188, 188);
+      margin-top: 1rem;
       padding: 1rem;
-      margin: 1rem 0;
-      border-radius: 8px;
-      min-height: 50px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 5px;
       display: none;
+    }
+    
+    .output-box.show {
+      display: block;
+    }
+    
+    /* Share section styles */
+    .share-section {
+      margin-top: 1rem;
+      padding: 1rem;
+      background: rgba(188, 188, 188, 0.1);
+      border: 1px solid rgba(188, 188, 188, 0.3);
+      border-radius: 8px;
+      display: none;
+    }
+    
+    .share-section.show {
+      display: block;
+    }
+    
+    .share-description {
       width: 100%;
-      max-width: 600px;
+      padding: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 5px;
+      background: rgba(255, 255, 255, 0.05);
+      color: #eee;
+      font-family: 'Orbitron', monospace;
+      font-weight: 300;
+      resize: vertical;
+      min-height: 60px;
       box-sizing: border-box;
-      word-wrap: break-word;
-      overflow-wrap: break-word;
+      margin-bottom: 10px;
+    }
+    
+    .share-description:focus {
+      outline: none;
+      border-color: rgba(188, 188, 188, 0.5);
+      box-shadow: 0 0 10px rgba(188, 188, 188, 0.2);
+    }
+    
+    .share-button {
+      background: rgba(188, 188, 188, 0.1);
+      border: 1px solid rgba(188, 188, 188, 0.3);
+      color: rgb(188, 188, 188);
+      padding: 0.5rem 1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      white-space: nowrap;
+      font-family: 'Orbitron', monospace;
+      font-weight: 300;
+      border-radius: 5px;
+    }
+    
+    .share-button:hover {
+      background: rgba(187, 187, 187, 0.2);
+    }
+    
+    .share-button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
     }
     
     /* Responsive output box */
@@ -440,10 +495,6 @@
         margin: 0.6rem 0;
         font-size: 12px;
       }
-    }
-    
-    .output-box.show {
-      display: block;
     }
     
     /* Responsive textarea */
@@ -471,10 +522,46 @@
       max-width: 90%;
     }
     
+    .file-input-container {
+      position: relative;
+      display: inline-block;
+      cursor: pointer;
+      margin-bottom: 10px;
+    }
+    
+    .file-input-label {
+      background: rgba(188, 188, 188, 0.1);
+      border: 1px solid rgba(188, 188, 188, 0.3);
+      color: rgb(188, 188, 188);
+      padding: 0.5rem 1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      white-space: nowrap;
+      text-align: center;
+      font-size: 14px;
+      font-family: 'Orbitron', monospace;
+      font-weight: 300;
+      border-radius: 5px;
+    }
+    
+    .file-input-label:hover {
+      background: rgba(187, 187, 187, 0.2);
+    }
+    
+    /* Responsive file input label */
+    @media (max-width: 768px) {
+      .file-input-label {
+        padding: 0.4rem 0.8rem;
+        font-size: 14px;
+      }
+    }
+    
     @media (max-width: 480px) {
-      input[type="file"] {
-        max-width: 95%;
-        font-size: 11px;
+      .file-input-label {
+        padding: 0.3rem 0.6rem;
+        font-size: 12px;
+        width: 100%;
+        max-width: 200px;
       }
     }
     
@@ -563,13 +650,19 @@
     <img src="./assets/clean logo.png" alt="Logo" class="header-logo" />
     <nav class="header-nav">
       <a href="index.html" class="nav-button">Home</a>
+      <a href="Encoder.html" class="nav-button">Encoder</a>
+      <a href="feed.html" class="nav-button">Feed</a>
+      <a href="documentation.html" class="nav-button">Documentation</a>
     </nav>
   </header>
 
   <canvas id="matrixCanvas"></canvas>
   <img src="assets/incrypt title.png" alt="Incrypt" class="title-image">
   <div class="controls">
-    <input type="file" id="portraitInput" accept="image/*">
+    <div class="file-input-container">
+      <input type="file" id="portraitInput" accept="image/*" style="display: none;">
+      <label for="portraitInput" class="file-input-label">Choose Image File</label>
+    </div>
     <textarea id="textMessage" rows="4" cols="50" placeholder="Enter your secret message"></textarea>
 
     <button class="advanced-toggle" onclick="toggleAdvanced()">Advanced Settings</button>
@@ -605,6 +698,19 @@
     </div>
     <div id="outputBox" class="output-box"></div>
     <a id="downloadLink" style="color: rgb(188, 188, 188);"></a>
+    
+    <!-- Share Section -->
+    <div id="shareSection" class="share-section">
+      <h4 style="margin-top: 0; margin-bottom: 15px; color: rgb(188, 188, 188);">Share Your Encoded Image</h4>
+      <textarea 
+        id="shareDescription" 
+        class="share-description" 
+        placeholder="Describe your encoded image or share a hint about the hidden message..."
+      ></textarea>
+      <button id="shareButton" class="action-button" onclick="shareToFeed()" disabled>
+        Share to Feed
+      </button>
+    </div>
   </div>
   <canvas id="canvas"></canvas>
 
@@ -717,17 +823,39 @@
     bitSlider.oninput = () => document.getElementById("bitVal").textContent = bitSlider.value;
   
     document.getElementById("portraitInput").addEventListener("change", e => {
+      console.log("File input change event triggered");
       const file = e.target.files[0];
-      if (!file) return;
+      if (!file) {
+        console.log("No file selected");
+        return;
+      }
+      console.log("File selected:", file.name, file.type, file.size);
+      
+      // Check if it's an image file
+      if (!file.type.startsWith('image/')) {
+        alert('Please select an image file (JPEG, PNG, GIF, etc.)');
+        return;
+      }
+      
       const reader = new FileReader();
       reader.onload = ev => {
+        console.log("File read successfully");
         const img = new Image();
         img.onload = () => {
+          console.log("Image loaded:", img.width, "x", img.height);
           uploadedImage = img;
           resizeCanvasToImage(img);
           generateCanvas(img);
         };
+        img.onerror = () => {
+          console.error("Error loading image");
+          alert('Error loading image. Please try a different file.');
+        };
         img.src = ev.target.result;
+      };
+      reader.onerror = () => {
+        console.error("Error reading file");
+        alert('Error reading file. Please try again.');
       };
       reader.readAsDataURL(file);
     });
@@ -802,6 +930,64 @@
       link.href = canvas.toDataURL();
       link.download = "stego_image.png";
       link.innerText = "Download Image";
+      
+      // Show share section after successful encoding
+      const shareSection = document.getElementById("shareSection");
+      shareSection.classList.add("show");
+      
+      // Enable share button if description is provided
+      const shareDescription = document.getElementById("shareDescription");
+      const shareButton = document.getElementById("shareButton");
+      
+      shareDescription.addEventListener("input", function() {
+        shareButton.disabled = !shareDescription.value.trim();
+      });
+    }
+  
+    async function shareToFeed() {
+      const description = document.getElementById("shareDescription").value.trim();
+      if (!description) return;
+      
+      // Get the encoded image data
+      const imageData = canvas.toDataURL();
+      
+      // Show loading state
+      const shareButton = document.getElementById("shareButton");
+      const originalText = shareButton.innerText;
+      shareButton.innerText = "Sharing...";
+      shareButton.disabled = true;
+      
+      try {
+        // Send post to API
+        const response = await fetch('/api/posts', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            image: imageData,
+            description: description
+          })
+        });
+        
+        if (response.ok) {
+          const newPost = await response.json();
+          alert('Your encoded image has been shared to the public feed!');
+          
+          // Clear the description
+          document.getElementById("shareDescription").value = '';
+        } else {
+          const error = await response.json();
+          alert('Failed to share: ' + (error.error || 'Unknown error'));
+        }
+      } catch (error) {
+        console.error('Error sharing post:', error);
+        alert('Failed to share. Please check your internet connection and try again.');
+      } finally {
+        // Reset button state
+        shareButton.innerText = originalText;
+        shareButton.disabled = false;
+      }
     }
   
     function decode() {
