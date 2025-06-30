@@ -8,7 +8,7 @@ let cachedClient = null;
 
 async function getClient() {
   if (cachedClient) return cachedClient;
-  const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+  const client = new MongoClient(uri);
   await client.connect();
   cachedClient = client;
   return client;
