@@ -814,13 +814,30 @@
     const dotSlider = document.getElementById("dotSlider");
     const jitterSlider = document.getElementById("jitterSlider");
     const bitSlider = document.getElementById("bitSlider");
+    const modeToggle = document.getElementById("modeToggle");
     document.getElementById("dotVal").textContent = dotSlider.value;
     document.getElementById("jitterVal").textContent = jitterSlider.value;
     document.getElementById("bitVal").textContent = bitSlider.value;
   
-    dotSlider.oninput = () => document.getElementById("dotVal").textContent = dotSlider.value;
-    jitterSlider.oninput = () => document.getElementById("jitterVal").textContent = jitterSlider.value;
-    bitSlider.oninput = () => document.getElementById("bitVal").textContent = bitSlider.value;
+    function updateImageIfLoaded() {
+      if (uploadedImage) {
+        generateCanvas(uploadedImage);
+      }
+    }
+
+    dotSlider.oninput = () => {
+      document.getElementById("dotVal").textContent = dotSlider.value;
+      updateImageIfLoaded();
+    };
+    jitterSlider.oninput = () => {
+      document.getElementById("jitterVal").textContent = jitterSlider.value;
+      updateImageIfLoaded();
+    };
+    bitSlider.oninput = () => {
+      document.getElementById("bitVal").textContent = bitSlider.value;
+      updateImageIfLoaded();
+    };
+    modeToggle.onchange = updateImageIfLoaded;
   
     document.getElementById("portraitInput").addEventListener("change", e => {
       console.log("File input change event triggered");
