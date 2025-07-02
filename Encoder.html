@@ -665,27 +665,9 @@
     </div>
     <textarea id="textMessage" rows="4" cols="50" placeholder="Enter your secret message"></textarea>
 
-    <button class="advanced-toggle" onclick="toggleAdvanced()">Advanced Settings</button>
+    <button class="advanced-toggle" onclick="toggleAdvanced()">Pointillist Mode</button>
     
     <div class="advanced-menu" id="advancedMenu">
-      <div class="slider-group">
-        <label for="dotSlider">Dots</label>
-        <input type="range" id="dotSlider" min="100" max="150000" value="5000">
-        <span id="dotVal">5000</span>
-      </div>
-
-      <div class="slider-group">
-        <label for="jitterSlider">Jitter</label>
-        <input type="range" id="jitterSlider" min="0" max="30" value="6">
-        <span id="jitterVal">6</span>
-      </div>
-
-      <div class="slider-group">
-        <label for="bitSlider">Bit Depth</label>
-        <input type="range" id="bitSlider" min="1" max="8" value="1">
-        <span id="bitVal">1</span>
-      </div>
-
       <div class="slider-group">
         <label for="modeToggle">Use pointillist mode</label>
         <input type="checkbox" id="modeToggle">
@@ -810,34 +792,13 @@
       canvas.style.height = 'auto';
     }
   
-    // Slider displays
-    const dotSlider = document.getElementById("dotSlider");
-    const jitterSlider = document.getElementById("jitterSlider");
-    const bitSlider = document.getElementById("bitSlider");
+    // Only keep modeToggle and its onchange handler
     const modeToggle = document.getElementById("modeToggle");
-    document.getElementById("dotVal").textContent = dotSlider.value;
-    document.getElementById("jitterVal").textContent = jitterSlider.value;
-    document.getElementById("bitVal").textContent = bitSlider.value;
-  
-    function updateImageIfLoaded() {
+    modeToggle.onchange = function() {
       if (uploadedImage) {
         generateCanvas(uploadedImage);
       }
-    }
-
-    dotSlider.oninput = () => {
-      document.getElementById("dotVal").textContent = dotSlider.value;
-      updateImageIfLoaded();
     };
-    jitterSlider.oninput = () => {
-      document.getElementById("jitterVal").textContent = jitterSlider.value;
-      updateImageIfLoaded();
-    };
-    bitSlider.oninput = () => {
-      document.getElementById("bitVal").textContent = bitSlider.value;
-      updateImageIfLoaded();
-    };
-    modeToggle.onchange = updateImageIfLoaded;
   
     document.getElementById("portraitInput").addEventListener("change", e => {
       console.log("File input change event triggered");
@@ -886,15 +847,20 @@
         return;
       }
   
+      // Fill canvas with white before drawing dots
+      ctx.fillStyle = '#fff';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+  
+      // Fixed settings for pointillist mode
+      const dots = 150000;
+      const jitter = 6;
+  
       const temp = document.createElement('canvas');
       temp.width = image.width;
       temp.height = image.height;
       const tCtx = temp.getContext('2d');
       tCtx.drawImage(image, 0, 0);
       const imgData = tCtx.getImageData(0, 0, image.width, image.height).data;
-  
-      const dots = parseInt(dotSlider.value);
-      const jitter = parseInt(jitterSlider.value);
   
       for (let i = 0; i < dots; i++) {
         const x = Math.random() * canvas.width;
@@ -924,21 +890,33 @@
       const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
       const data = imgData.data;
   
+      // Write 1-byte header: 0 = normal, 1 = pointillist
+      const usePointillist = document.getElementById("modeToggle").checked ? 1 : 0;
+      const headerBits = [];
+      for (let i = 7; i >= 0; i--) headerBits.push((usePointillist >> i) & 1);
+      for (let i = 0; i < 8; i++) {
+        data[i] = (data[i] & ~1) | headerBits[i];
+      }
+  
+      // Fixed settings for pointillist mode
+      const bitDepth = 1;
+      const dots = 150000;
+      const jitter = 6;
+  
       const messageBytes = new TextEncoder().encode(message);
       const length = messageBytes.length;
-  
       // Store length as 2 bytes
-      const header = new Uint8Array([length >> 8, length & 0xff]);
-      const combined = new Uint8Array([...header, ...messageBytes]);
-  
-      const bitsArray = [];
+      const msgHeader = new Uint8Array([length >> 8, length & 0xff]);
+      const combined = new Uint8Array([...msgHeader, ...messageBytes]);
+      let bitsArray = [];
       for (let byte of combined) {
         for (let i = 7; i >= 0; i--) bitsArray.push((byte >> i) & 1);
       }
   
-      for (let i = 0; i < bitsArray.length; i++) {
-        if (i >= data.length) break;
-        data[i] = (data[i] & ~1) | bitsArray[i];
+      // Embed message as continuous bit stream, 1 bit per channel, starting after header
+      let bitIdx = 0;
+      for (let i = 8; i < data.length && bitIdx < bitsArray.length; i++) {
+        data[i] = (data[i] & ~1) | bitsArray[bitIdx++];
       }
   
       ctx.putImageData(imgData, 0, 0);
@@ -1010,28 +988,34 @@
     function decode() {
       const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
       const data = imgData.data;
-  
-      const bits = [];
-      for (let i = 0; i < data.length; i++) {
+      // Read 1-byte header from first 8 LSBs
+      let modeBits = [];
+      for (let i = 0; i < 8; i++) modeBits.push(data[i] & 1);
+      let mode = 0;
+      for (let i = 0; i < 8; i++) mode |= modeBits[i] << (7 - i);
+      const usePointillist = mode === 1;
+      // Use fixed settings for pointillist mode
+      const bitDepth = 1;
+      // Extract message bits after header
+      let bits = [];
+      for (let i = 8; i < data.length; i++) {
         bits.push(data[i] & 1);
       }
-  
       // Read 16-bit length prefix
       const lengthBits = bits.slice(0, 16);
       const msgLength = (lengthBits.slice(0, 8).reduce((acc, bit, i) => acc | (bit << (7 - i)), 0) << 8) |
                         lengthBits.slice(8, 16).reduce((acc, bit, i) => acc | (bit << (7 - i)), 0);
-  
       const messageBits = bits.slice(16, 16 + msgLength * 8);
-  
       const messageBytes = [];
       for (let i = 0; i < messageBits.length; i += 8) {
         const byte = messageBits.slice(i, i + 8).reduce((acc, bit, j) => acc | (bit << (7 - j)), 0);
         messageBytes.push(byte);
       }
-  
       const msg = new TextDecoder().decode(new Uint8Array(messageBytes));
       const outputBox = document.getElementById('outputBox');
-      outputBox.textContent = msg;
+      outputBox.innerHTML =
+        `<b>Pointillist mode: ${usePointillist ? 'On' : 'Off'}</b><br>` +
+        `<b>Message:</b><br>${msg}`;
       outputBox.classList.add('show');
     }
   </script>
