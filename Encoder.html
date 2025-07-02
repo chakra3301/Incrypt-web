@@ -665,13 +665,10 @@
     </div>
     <textarea id="textMessage" rows="4" cols="50" placeholder="Enter your secret message"></textarea>
 
-    <button class="advanced-toggle" onclick="toggleAdvanced()">Pointillist Mode</button>
-    
-    <div class="advanced-menu" id="advancedMenu">
-      <div class="slider-group">
-        <label for="modeToggle">Use pointillist mode</label>
-        <input type="checkbox" id="modeToggle">
-      </div>
+    <!-- Remove advanced menu, add a simple toggle for pointillist mode above the action buttons -->
+    <div style="margin: 1rem 0; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+      <input type="checkbox" id="modeToggle">
+      <label for="modeToggle" style="color: #ccc; font-size: 1rem; cursor: pointer;">Use pointillist mode</label>
     </div>
 
     <div class="action-buttons">
