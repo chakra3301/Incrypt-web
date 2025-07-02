@@ -844,9 +844,13 @@
         return;
       }
   
-      // Fill canvas with white before drawing dots
-      ctx.fillStyle = '#fff';
+      // Draw the original image as the background
+      ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+      // Darken the background image
+      ctx.globalAlpha = 0.5;
+      ctx.fillStyle = '#000';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.globalAlpha = 1.0;
   
       // Fixed settings for pointillist mode
       const dots = 150000;
