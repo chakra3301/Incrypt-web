@@ -208,112 +208,33 @@
     <ul>
       <li>Upload an image (PNG/JPG)</li>
       <li>Hide a secret text message inside that image using the Least Significant Bit (LSB) method</li>
-      <li>Optionally convert your image into a pointillist-style painting to disguise the data more creatively</li>
+      <li>Optionally enable <b>pointillist mode</b> for a creative, obfuscated result</li>
       <li>Download the result</li>
       <li>Re-upload and decode any stego-image to reveal the hidden message</li>
     </ul>
     <p>All processing happens locally in your browser—your data never leaves your device.</p>
 
     <h2>How To Use It</h2>
-
-    <h3>1. Upload an Image</h3>
-    <p>Click the "Choose File" button and select any image from your device. Recommended size: square or near-square.</p>
-
-    <h3>2. Enter Your Message</h3>
-    <p>Type the message you want to hide in the textarea below the file input.</p>
-
-    <h3>3. (Optional) Toggle Advanced Settings</h3>
-    <p>Click the "Advanced Settings" button to reveal the following options:</p>
-
-    <table>
-      <tr>
-        <th>Setting</th>
-        <th>Description</th>
-      </tr>
-      <tr>
-        <td>Dots</td>
-        <td>Controls how many dots are used in pointillist mode (higher = more detail)</td>
-      </tr>
-      <tr>
-        <td>Jitter</td>
-        <td>Adds randomness to the color of each dot (higher = noisier look)</td>
-      </tr>
-      <tr>
-        <td>Bit Depth</td>
-        <td>How many LSBs to use for encoding (1–8). Higher stores more but may be more visible</td>
-      </tr>
-      <tr>
-        <td>Pointillist Mode</td>
-        <td>Enables dot-painting style instead of pixel-perfect rendering</td>
-      </tr>
-    </table>
-
-    <h3>4. Click Encode</h3>
-    <p>This embeds your message into the image and creates a downloadable link.</p>
-
-    <h3>5. Decode a Stego Image</h3>
-    <ul>
-      <li>Upload the previously encoded image</li>
-      <li>Click the Decode button</li>
-      <li>The hidden message will appear in the output box</li>
-    </ul>
+    <ol>
+      <li><b>Upload an Image:</b> Click the "Choose File" button and select any image from your device.</li>
+      <li><b>Enter Your Message:</b> Type the message you want to hide in the textarea below the file input.</li>
+      <li><b>(Optional) Toggle Pointillist Mode:</b> Use the "Use pointillist mode" checkbox to enable or disable the pointillist effect. When enabled, the image will be stylized with colored dots over a darkened version of the original image. The settings for this mode are fixed for maximum compatibility.</li>
+      <li><b>Click Encode:</b> This embeds your message into the image and creates a downloadable link.</li>
+      <li><b>Decode a Stego Image:</b> Upload a previously encoded image and click the Decode button. The hidden message will appear in the output box. The tool automatically detects if pointillist mode was used.</li>
+    </ol>
 
     <h2>How It Works</h2>
-
-    <h3>Encoding:</h3>
     <ul>
-      <li>Text is converted into UTF-8 bytes</li>
-      <li>Length (16-bit) is prepended</li>
-      <li>Message is encoded into image pixel data using the Least Significant Bit (LSB)</li>
-      <li>Optionally, the image is redrawn in a pointillist style with noise</li>
+      <li>Your message is converted to bytes and its length is stored in the image.</li>
+      <li>The message is encoded into the image's pixel data using the Least Significant Bit (LSB) method.</li>
+      <li>If pointillist mode is enabled, the image is first stylized with colored dots over a darkened version of the original image, then the message is embedded.</li>
+      <li>A 1-byte header is embedded to indicate if pointillist mode was used, so decoding is always automatic and reliable.</li>
     </ul>
-
-    <h3>Decoding:</h3>
-    <ul>
-      <li>Image pixels are read and LSBs extracted</li>
-      <li>First 16 bits determine the message length</li>
-      <li>Bits are grouped into bytes and decoded into text</li>
-    </ul>
-
-    <h2>Settings Explained</h2>
-
-    <table>
-      <tr>
-        <th>Setting</th>
-        <th>Range</th>
-        <th>Default</th>
-        <th>Notes</th>
-      </tr>
-      <tr>
-        <td>Dots</td>
-        <td>100–20000</td>
-        <td>5000</td>
-        <td>Only applies in pointillist mode</td>
-      </tr>
-      <tr>
-        <td>Jitter</td>
-        <td>0–30</td>
-        <td>6</td>
-        <td>Adds randomness to colors</td>
-      </tr>
-      <tr>
-        <td>Bit Depth</td>
-        <td>1–8</td>
-        <td>1</td>
-        <td>Higher bit depth = more capacity</td>
-      </tr>
-      <tr>
-        <td>Pointillist Mode</td>
-        <td>On/Off</td>
-        <td>Off</td>
-        <td>Uses artistic dot rendering</td>
-      </tr>
-    </table>
 
     <h2>Output</h2>
     <ul>
-      <li>Result is a PNG image with your message embedded</li>
-      <li>Can be shared and decoded by anyone with this tool</li>
+      <li>The result is a PNG image with your message embedded.</li>
+      <li>Anyone with this tool can decode the message, regardless of the mode used.</li>
     </ul>
 
     <h2>Privacy & Security</h2>
@@ -325,9 +246,9 @@
 
     <h2>Tips</h2>
     <ul>
-      <li>For stealth: use bit depth 1–2 and disable pointillist mode</li>
-      <li>For obfuscation: enable pointillist mode with high jitter</li>
-      <li>Avoid overly compressed formats like JPG for encoding</li>
+      <li>For stealth, use normal mode (pointillist off) for minimal visual change.</li>
+      <li>For obfuscation, use pointillist mode for a creative, artistic look that disguises the message.</li>
+      <li>Avoid overly compressed formats like JPG for encoding, as compression can damage hidden data.</li>
     </ul>
   </div>
 
