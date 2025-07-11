@@ -35,7 +35,7 @@ export default function Home() {
   const [imageCapacity, setImageCapacity] = useState<number>(0);
   const [autoExpand, setAutoExpand] = useState(true);
   const [preserveQuality, setPreserveQuality] = useState(true);
-  const workerRef = useRef<Worker>();
+  const workerRef = useRef<Worker | undefined>(undefined);
   const [maxCanvas, setMaxCanvas] = useState<number>(25000);
   const [decodedText, setDecodedText] = useState<string>("");
 
