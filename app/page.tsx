@@ -165,7 +165,7 @@ export default function Home() {
       <header className="header">
         <img src="/assets/dotlock.png" alt="Logo" className="header-logo" />
         <nav className="header-nav">
-          <a href="/index.html" className="nav-button">Home</a>
+          <a href="https://www.incrypt.net/" className="nav-button">Home</a>
         </nav>
       </header>
 
