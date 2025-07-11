@@ -40,6 +40,8 @@ export default function Home() {
   const [decodedText, setDecodedText] = useState<string>("");
   const [sharing, setSharing] = useState(false);
   const [shareSuccess, setShareSuccess] = useState(false);
+  const [showShareForm, setShowShareForm] = useState(false);
+  const [customDescription, setCustomDescription] = useState<string>("");
 
   useEffect(() => {
     setMaxCanvas(getMaxCanvasSize());
@@ -160,6 +162,8 @@ export default function Home() {
     setTextMessage("");
     setImageFile(undefined);
     setShareSuccess(false);
+    setShowShareForm(false);
+    setCustomDescription("");
   };
 
   const shareToFeed = async () => {
@@ -175,6 +179,10 @@ export default function Home() {
       reader.onload = async () => {
         const imageDataURL = reader.result as string;
         
+        // Use custom description or default description
+        const description = customDescription.trim() || 
+          `Encoded steganography image created with Incrypt - ${encodeType === 'text' ? 'Text message' : 'File data'} encoded with ${bits} bits per channel`;
+        
         // Post to feed API
         const feedResponse = await fetch('https://www.incrypt.net/api/posts', {
           method: 'POST',
@@ -183,7 +191,7 @@ export default function Home() {
           },
           body: JSON.stringify({
             image: imageDataURL,
-            description: `Encoded steganography image created with Incrypt - ${encodeType === 'text' ? 'Text message' : 'File data'} encoded with ${bits} bits per channel`
+            description: description
           })
         });
         
@@ -191,6 +199,7 @@ export default function Home() {
           const data = await feedResponse.json();
           console.log('Posted successfully:', data);
           setShareSuccess(true);
+          setShowShareForm(false);
         } else {
           throw new Error('Failed to post to feed');
         }
@@ -503,7 +512,7 @@ export default function Home() {
               Download PNG
             </a>
             <button 
-              onClick={shareToFeed}
+              onClick={() => setShowShareForm(!showShareForm)}
               disabled={sharing}
               className="ml-4 bg-green-600 text-white px-6 py-3 rounded hover:bg-green-700 disabled:bg-gray-400"
             >
@@ -512,6 +521,47 @@ export default function Home() {
             <button onClick={clear} className="ml-4 bg-gray-600 text-white px-6 py-3 rounded hover:bg-gray-700">
               Start Over
             </button>
+            
+            {/* Share Form */}
+            {showShareForm && !shareSuccess && (
+              <div className="mt-4 p-4 bg-gray-800/20 rounded border border-gray-500/30">
+                <h3 className="text-lg font-medium mb-3 text-white">Share to Feed</h3>
+                <div className="mb-3">
+                  <label className="block text-sm font-medium mb-2 text-gray-300">
+                    Description (optional):
+                  </label>
+                  <textarea
+                    value={customDescription}
+                    onChange={(e) => setCustomDescription(e.target.value)}
+                    placeholder="Add a description for your encoded image..."
+                    className="w-full p-2 rounded border border-gray-500 bg-black text-white"
+                    rows={3}
+                  />
+                  <p className="text-xs text-gray-400 mt-1">
+                    Leave empty to use default description
+                  </p>
+                </div>
+                <div className="flex gap-2">
+                  <button
+                    onClick={shareToFeed}
+                    disabled={sharing}
+                    className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 disabled:bg-gray-400"
+                  >
+                    {sharing ? "Sharing..." : "Post to Feed"}
+                  </button>
+                  <button
+                    onClick={() => {
+                      setShowShareForm(false);
+                      setCustomDescription("");
+                    }}
+                    className="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            )}
+            
             {shareSuccess && (
               <div className="mt-4 text-green-400">
                 ✓ Successfully shared to feed! <a href="https://www.incrypt.net/feed.html" className="underline hover:text-green-300">View Feed</a>
