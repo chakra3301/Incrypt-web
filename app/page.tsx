@@ -38,6 +38,8 @@ export default function Home() {
   const workerRef = useRef<Worker | null>(null);
   const [maxCanvas, setMaxCanvas] = useState<number>(25000);
   const [decodedText, setDecodedText] = useState<string>("");
+  const [sharing, setSharing] = useState(false);
+  const [shareSuccess, setShareSuccess] = useState(false);
 
   useEffect(() => {
     setMaxCanvas(getMaxCanvasSize());
@@ -157,6 +159,50 @@ export default function Home() {
     setDataFile(undefined);
     setTextMessage("");
     setImageFile(undefined);
+    setShareSuccess(false);
+  };
+
+  const shareToFeed = async () => {
+    if (!dl) return;
+    
+    setSharing(true);
+    try {
+      // Convert blob URL to data URL
+      const response = await fetch(dl);
+      const blob = await response.blob();
+      const reader = new FileReader();
+      
+      reader.onload = async () => {
+        const imageDataURL = reader.result as string;
+        
+        // Post to feed API
+        const feedResponse = await fetch('https://www.incrypt.net/api/posts', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            image: imageDataURL,
+            description: `Encoded steganography image created with Incrypt - ${encodeType === 'text' ? 'Text message' : 'File data'} encoded with ${bits} bits per channel`
+          })
+        });
+        
+        if (feedResponse.ok) {
+          const data = await feedResponse.json();
+          console.log('Posted successfully:', data);
+          setShareSuccess(true);
+        } else {
+          throw new Error('Failed to post to feed');
+        }
+      };
+      
+      reader.readAsDataURL(blob);
+    } catch (error) {
+      console.error('Error posting:', error);
+      alert('Failed to share to feed. Please try again.');
+    } finally {
+      setSharing(false);
+    }
   };
 
   return (
@@ -456,9 +502,21 @@ export default function Home() {
             >
               Download PNG
             </a>
+            <button 
+              onClick={shareToFeed}
+              disabled={sharing}
+              className="ml-4 bg-green-600 text-white px-6 py-3 rounded hover:bg-green-700 disabled:bg-gray-400"
+            >
+              {sharing ? "Sharing..." : shareSuccess ? "✓ Shared!" : "Share to Feed"}
+            </button>
             <button onClick={clear} className="ml-4 bg-gray-600 text-white px-6 py-3 rounded hover:bg-gray-700">
               Start Over
             </button>
+            {shareSuccess && (
+              <div className="mt-4 text-green-400">
+                ✓ Successfully shared to feed! <a href="https://www.incrypt.net/feed.html" className="underline hover:text-green-300">View Feed</a>
+              </div>
+            )}
             {decodedText && (
               <div className="mt-8 mx-auto max-w-xl bg-gray-900 text-green-300 p-4 rounded border border-green-600 text-left whitespace-pre-wrap break-words">
                 <h3 className="font-bold mb-2 text-green-200">Decoded Text Message:</h3>
