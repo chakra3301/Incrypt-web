@@ -1,0 +1,8 @@
+Flask
+Werkzeug
+pillow
+numpy
+tqdm
+zstandard
+torch
+transformers 

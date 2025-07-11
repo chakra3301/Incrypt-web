@@ -191,7 +191,7 @@
     <img src="./assets/clean logo.png" alt="Logo" class="header-logo" />
     <nav class="header-nav">
       <a href="index.html" class="nav-button">Home</a>
-      <a href="Encoder.html" class="nav-button">Encoder</a>
+      <a href="http://localhost:3000" class="nav-button">Encoder</a>
       <a href="feed.html" class="nav-button">Feed</a>
       <a href="documentation.html" class="nav-button">Documentation</a>
     </nav>
@@ -201,34 +201,45 @@
     <h1>Incrypt: Web-Based Image Steganography Tool</h1>
     <p>===========================================</p>
     
-    <p>Incrypt allows you to encode secret messages inside images and decode them later using only your browser.</p>
+    <p>Incrypt allows you to encode secret messages inside images and decode them later using only your browser. Access the encoder app by clicking the "Encoder" button in the header.</p>
 
     <h2>What Is This?</h2>
-    <p>Incrypt is a client-side steganography tool. It lets you:</p>
+    <p>Incrypt is a client-side steganography tool built with modern web technologies. It lets you:</p>
     <ul>
-      <li>Upload an image (PNG/JPG)</li>
+      <li>Upload an image (PNG/JPG/WebP)</li>
       <li>Hide a secret text message inside that image using the Least Significant Bit (LSB) method</li>
+      <li>Adjust bit depth settings for optimal encoding (1-8 bits per channel)</li>
       <li>Optionally enable <b>pointillist mode</b> for a creative, obfuscated result</li>
-      <li>Download the result</li>
+      <li>Download the result as a PNG file</li>
       <li>Re-upload and decode any stego-image to reveal the hidden message</li>
+      <li>View real-time progress during encoding/decoding operations</li>
     </ul>
-    <p>All processing happens locally in your browser—your data never leaves your device.</p>
+    <p>All processing happens locally in your browser using Web Workers—your data never leaves your device.</p>
+
+    <h2>Important Notice: Large Files & Aspect Ratio</h2>
+    <div style="background-color: #2a2a2a; border: 1px solid #444; padding: 1rem; border-radius: 5px; margin: 1rem 0;">
+      <p><strong>⚠️ For very large files:</strong> If you're encoding large amounts of data, we recommend using images with a <strong>1:1 aspect ratio</strong> (square images) for optimal performance and reliability. This ensures the encoding process works smoothly without timeouts or memory issues.</p>
+    </div>
 
     <h2>How To Use It</h2>
     <ol>
-      <li><b>Upload an Image:</b> Click the "Choose File" button and select any image from your device.</li>
-      <li><b>Enter Your Message:</b> Type the message you want to hide in the textarea below the file input.</li>
-      <li><b>(Optional) Toggle Pointillist Mode:</b> Use the "Use pointillist mode" checkbox to enable or disable the pointillist effect. When enabled, the image will be stylized with colored dots over a darkened version of the original image. The settings for this mode are fixed for maximum compatibility.</li>
+      <li><b>Access the Encoder:</b> Click the "Encoder" button in the header to open the encoding application.</li>
+      <li><b>Upload an Image:</b> Click the file upload area and select any image from your device.</li>
+      <li><b>Enter Your Message:</b> Type the message you want to hide in the text area.</li>
+      <li><b>Adjust Settings (Optional):</b> Modify the bit depth if needed (default is 1 bit per channel).</li>
+      <li><b>(Optional) Toggle Pointillist Mode:</b> Use the pointillist mode toggle to enable or disable the artistic effect. When enabled, the image will be stylized with colored dots over a darkened version of the original image.</li>
       <li><b>Click Encode:</b> This embeds your message into the image and creates a downloadable link.</li>
-      <li><b>Decode a Stego Image:</b> Upload a previously encoded image and click the Decode button. The hidden message will appear in the output box. The tool automatically detects if pointillist mode was used.</li>
+      <li><b>Decode a Stego Image:</b> Upload a previously encoded image and click the Decode button. The hidden message will appear in the output area. The tool automatically detects if pointillist mode was used.</li>
     </ol>
 
     <h2>How It Works</h2>
     <ul>
       <li>Your message is converted to bytes and its length is stored in the image.</li>
-      <li>The message is encoded into the image's pixel data using the Least Significant Bit (LSB) method.</li>
+      <li>The message is encoded into the image's pixel data using the Least Significant Bit (LSB) method with configurable bit depth.</li>
+      <li>Processing is handled by Web Workers to prevent browser freezing during large operations.</li>
       <li>If pointillist mode is enabled, the image is first stylized with colored dots over a darkened version of the original image, then the message is embedded.</li>
       <li>A 1-byte header is embedded to indicate if pointillist mode was used, so decoding is always automatic and reliable.</li>
+      <li>Real-time progress indicators show encoding/decoding status.</li>
     </ul>
 
     <h2>Output</h2>
@@ -248,7 +259,11 @@
     <ul>
       <li>For stealth, use normal mode (pointillist off) for minimal visual change.</li>
       <li>For obfuscation, use pointillist mode for a creative, artistic look that disguises the message.</li>
+      <li>Use lower bit depths (1-2 bits) for maximum stealth and compatibility.</li>
+      <li>Use higher bit depths (3-8 bits) for larger message capacity, but be aware this may create more visible artifacts.</li>
       <li>Avoid overly compressed formats like JPG for encoding, as compression can damage hidden data.</li>
+      <li>For large messages, consider using square images (1:1 aspect ratio) for optimal performance.</li>
+      <li>The app automatically handles timeouts and provides progress feedback for long operations.</li>
     </ul>
   </div>
 
