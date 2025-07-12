@@ -1,35 +1,16 @@
-@import "tailwindcss";
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@300&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-:root {
-  --background: #111;
-  --foreground: #eee;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: 'Orbitron', monospace;
-  --font-mono: 'Orbitron', monospace;
-}
-
+/* Matrix background */
 body {
-  background: #111;
+  background: rgb(0, 0, 0);
   color: #eee;
   font-family: 'Orbitron', monospace;
   font-weight: 300;
-  text-align: center;
-  padding: 2rem;
   margin: 0;
   overflow-x: hidden;
-}
-
-/* Matrix background */
-#matrixCanvas {
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: -1;
+  min-height: 100vh;
 }
 
 /* Header styles */
@@ -37,132 +18,210 @@ body {
   position: fixed;
   top: 0;
   left: 0;
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px 20px;
-  background: #11111145;
+  right: 0;
+  background: rgba(0, 0, 0, 0.9);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid #333;
   z-index: 1000;
-  box-sizing: border-box;
+  padding: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .header-logo {
-  height: 50px;
-  margin-right: auto;
-  filter: brightness(150%);
+  height: 40px;
+  width: auto;
 }
 
 .header-nav {
   display: flex;
-  flex: 1;
-  justify-content: center;
-  gap: 50px;
+  gap: 1rem;
 }
 
 .nav-button {
-  font-family: 'Orbitron', monospace;
-  font-weight: 300;
-  color: white;
+  color: #eee;
   text-decoration: none;
-  padding: 10px 15px;
-  border-radius: 5px;
-  transition: background-color 0.3s ease;
+  padding: 0.5rem 1rem;
+  border-radius: 0.375rem;
+  transition: all 0.2s;
+  border: 1px solid transparent;
 }
 
 .nav-button:hover {
-  background-color: rgba(255, 255, 255, 0.2);
+  background: rgba(34, 197, 94, 0.1);
+  border-color: #22c55e;
+  color: #22c55e;
+}
+
+/* Matrix canvas */
+#matrixCanvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  opacity: 0.3;
+}
+
+/* Container */
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem;
+  position: relative;
+  z-index: 1;
 }
 
 /* Progress bar */
 .progress-bar {
   width: 100%;
   height: 8px;
-  background: #222;
+  background: rgba(255, 255, 255, 0.1);
   border-radius: 4px;
-  margin: 1rem 0;
   overflow: hidden;
-  box-shadow: 0 0 8px #2563eb55;
+  margin: 1rem 0;
 }
 
 .progress {
   height: 100%;
-  background: linear-gradient(90deg, #2563eb 0%, #1d4ed8 100%);
-  transition: width 0.3s;
-  border-radius: 4px;
+  background: linear-gradient(90deg, #22c55e, #16a34a);
+  transition: width 0.3s ease;
 }
 
-/* Button styles */
-button {
-  background: rgba(188, 188, 188, 0.1);
-  border: 1px solid rgba(188, 188, 188, 0.3);
-  color: rgb(188, 188, 188);
-  padding: 0.5rem 1rem;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  white-space: nowrap;
-  font-family: 'Orbitron', monospace;
-  font-weight: 300;
-  border-radius: 5px;
+/* Button styles with green outlines */
+button, .nav-button {
+  border: 1px solid #22c55e;
+  transition: all 0.2s ease;
 }
 
-button:hover {
-  background: rgba(187, 187, 187, 0.2);
+button:hover, .nav-button:hover {
+  border-color: #16a34a;
+  box-shadow: 0 0 10px rgba(34, 197, 94, 0.3);
 }
 
-/* Input styles */
-input, select {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+/* Input styles with green outlines */
+input[type="file"], input[type="text"], input[type="range"], textarea {
+  border: 1px solid #22c55e;
+  background: rgba(0, 0, 0, 0.8);
   color: #eee;
-  padding: 0.5rem;
-  border-radius: 5px;
-  font-family: 'Orbitron', monospace;
-  font-weight: 300;
+  transition: all 0.2s ease;
 }
 
-input:focus, select:focus {
+input[type="file"]:focus, input[type="text"]:focus, input[type="range"]:focus, textarea:focus {
+  border-color: #16a34a;
+  box-shadow: 0 0 10px rgba(34, 197, 94, 0.3);
   outline: none;
-  border-color: rgba(188, 188, 188, 0.5);
-  box-shadow: 0 0 10px rgba(188, 188, 188, 0.2);
 }
 
-/* Container styles */
-.container {
-  max-width: 700px;
-  margin: 2rem auto;
-  padding: 2rem;
-  background: rgba(255,255,255,0.05);
-  border-radius: 1rem;
-  box-shadow: 0 2px 16px rgba(0,0,0,0.3);
-  border: 1px solid rgba(188, 188, 188, 0.1);
+/* Checkbox styles with green outlines */
+input[type="checkbox"] {
+  accent-color: #22c55e;
+  border: 1px solid #22c55e;
+  background: rgba(0, 0, 0, 0.8);
+  transition: all 0.2s ease;
 }
 
-/* Responsive styles */
+input[type="checkbox"]:checked {
+  background-color: #22c55e;
+  border-color: #16a34a;
+}
+
+input[type="checkbox"]:focus {
+  box-shadow: 0 0 10px rgba(34, 197, 94, 0.3);
+  outline: none;
+}
+
+/* Range slider styles with green theme */
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 8px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  outline: none;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #22c55e;
+  border: 2px solid #16a34a;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+  background: #16a34a;
+  box-shadow: 0 0 10px rgba(34, 197, 94, 0.5);
+}
+
+input[type="range"]::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #22c55e;
+  border: 2px solid #16a34a;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+input[type="range"]::-moz-range-thumb:hover {
+  background: #16a34a;
+  box-shadow: 0 0 10px rgba(34, 197, 94, 0.5);
+}
+
+/* Focus states for all interactive elements */
+button:focus, input:focus, textarea:focus, select:focus {
+  outline: 2px solid #22c55e;
+  outline-offset: 2px;
+}
+
+/* Active states */
+button:active {
+  transform: translateY(1px);
+  box-shadow: 0 0 15px rgba(34, 197, 94, 0.4);
+}
+
+/* Disabled states */
+button:disabled, input:disabled {
+  opacity: 0.5;
+  border-color: #666;
+  cursor: not-allowed;
+}
+
+/* Link styles */
+a {
+  color: #22c55e;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+a:hover {
+  color: #16a34a;
+  text-decoration: underline;
+}
+
+/* Responsive design */
 @media (max-width: 768px) {
-  body {
+  .container {
     padding: 1rem;
   }
   
   .header {
-    padding: 8px 15px;
-    background: #111;
-  }
-  
-  .header-logo {
-    height: 40px;
+    padding: 0.5rem;
   }
   
   .header-nav {
-    gap: 30px;
+    gap: 0.5rem;
   }
   
   .nav-button {
-    padding: 12px 12px;
-    font-size: 14px;
-  }
-  
-  #matrixCanvas {
-    display: none;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
   }
 }
