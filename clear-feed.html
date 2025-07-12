@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clear Feed - Admin</title>
+    <style>
+        body {
+            font-family: 'Orbitron', monospace;
+            background: #111;
+            color: #eee;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            text-align: center;
+            padding: 2rem;
+            background: rgba(255,255,255,0.05);
+            border-radius: 1rem;
+            border: 1px solid rgba(188, 188, 188, 0.1);
+        }
+        button {
+            background: #dc2626;
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 0.5rem;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background: #b91c1c;
+        }
+        button:disabled {
+            background: #666;
+            cursor: not-allowed;
+        }
+        .result {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 0.5rem;
+        }
+        .success {
+            background: rgba(34, 197, 94, 0.2);
+            border: 1px solid #22c55e;
+            color: #22c55e;
+        }
+        .error {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid #ef4444;
+            color: #ef4444;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Clear Feed</h1>
+        <p>This will permanently delete all posts from the feed.</p>
+        <button id="clearBtn" onclick="clearFeed()">Clear All Posts</button>
+        <div id="result"></div>
+    </div>
+
+    <script>
+        async function clearFeed() {
+            const button = document.getElementById('clearBtn');
+            const result = document.getElementById('result');
+            
+            button.disabled = true;
+            button.textContent = 'Clearing...';
+            result.innerHTML = '';
+            
+            try {
+                const response = await fetch('/api/posts', {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    result.innerHTML = `
+                        <div class="result success">
+                            <h3>✅ Feed Cleared Successfully!</h3>
+                            <p>${data.message}</p>
+                            <p>Posts deleted: ${data.deletedCount}</p>
+                        </div>
+                    `;
+                } else {
+                    throw new Error(data.error || 'Failed to clear feed');
+                }
+            } catch (error) {
+                result.innerHTML = `
+                    <div class="result error">
+                        <h3>❌ Error</h3>
+                        <p>${error.message}</p>
+                    </div>
+                `;
+            } finally {
+                button.disabled = false;
+                button.textContent = 'Clear All Posts';
+            }
+        }
+    </script>
+</body>
+</html> 
