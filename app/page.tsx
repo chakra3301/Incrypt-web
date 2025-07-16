@@ -140,6 +140,24 @@ export default function Home() {
         ) {
           const text = await data.blob.text();
           setDecodedText(text);
+        } else if (data.blob && data.blob.size < 1024 * 1024) {
+          // For small files, try to read as text anyway
+          try {
+            const text = await data.blob.text();
+            // Check if it looks like valid UTF-8 text (contains mostly printable characters)
+            const printableRatio = text.split('').filter(char => 
+              char.charCodeAt(0) >= 32 && char.charCodeAt(0) <= 126 || 
+              char.charCodeAt(0) >= 160 || 
+              char === '\n' || char === '\r' || char === '\t'
+            ).length / text.length;
+            
+            if (printableRatio > 0.8) {
+              setDecodedText(text);
+            }
+          } catch (e) {
+            // If reading as text fails, it's probably not text
+            console.log('Decoded data is not text');
+          }
         }
       }
       if (data.error) {
@@ -165,6 +183,7 @@ export default function Home() {
     setShareSuccess(false);
     setShowShareForm(false);
     setCustomDescription("");
+    setDecodedText("");
     document.title = defaultTitle;
   };
 
@@ -225,6 +244,8 @@ export default function Home() {
         <img src="/assets/dotlock.png" alt="Logo" className="header-logo" />
         <nav className="header-nav">
           <a href="https://www.incrypt.net/" className="nav-button">Home</a>
+          <button className="nav-button">Documentation</button>
+          <button className="nav-button">Feed</button>
         </nav>
       </header>
 
@@ -515,7 +536,7 @@ export default function Home() {
             >
               {sharing ? "Sharing..." : shareSuccess ? "✓ Shared!" : "Share to Feed"}
             </button>
-            <button onClick={clear} className="ml-4 bg-gray-600 text-white px-6 py-3 rounded hover:bg-gray-700">
+            <button onClick={clear} className="ml-4 custom-file-button">
               Start Over
             </button>
             
