@@ -29,14 +29,14 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@300&display=swap" rel="stylesheet" />
-        <link rel="icon" type="image/png" href="./assets/favicon.png" />
-        <link rel="shortcut icon" type="image/png" href="./assets/favicon.png" />
+        <link rel="icon" type="image/png" href="/assets/favicon.png" />
+        <link rel="shortcut icon" type="image/png" href="/assets/favicon.png" />
         <title>Encoder</title>
       </head>
       <body>
         {/* Header */}
         <header className="main-header">
-          <img src="./assets/clean logo.png" alt="Logo" className="header-logo" />
+          <img src="/assets/clean logo.png" alt="Logo" className="header-logo" />
           <nav className="header-nav">
             <a href="../index.html" className="nav-button">Home</a>
             <a href="./index.html" className="nav-button">Encoder</a>
@@ -51,10 +51,10 @@ export default function RootLayout({
         {/* Footer */}
         <div className="content-spacer"></div>
         <footer>
-          <img src="./assets/404.png" alt="404 Footer" className="footer-image" />
+          <img src="/assets/404.png" alt="404 Footer" className="footer-image" />
           <div className="footer-social-links">
-            <img src="./assets/github.png" alt="GitHub" className="social-icon" />
-            <img src="./assets/x.png" alt="Twitter" className="social-icon" />
+            <img src="/assets/github.png" alt="GitHub" className="social-icon" />
+            <img src="/assets/x.png" alt="Twitter" className="social-icon" />
           </div>
         </footer>
       </body>
