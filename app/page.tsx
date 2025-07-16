@@ -145,7 +145,7 @@ export default function Home() {
           try {
             const text = await data.blob.text();
             // Check if it looks like valid UTF-8 text (contains mostly printable characters)
-            const printableRatio = text.split('').filter(char => 
+            const printableRatio = text.split('').filter((char: string) => 
               char.charCodeAt(0) >= 32 && char.charCodeAt(0) <= 126 || 
               char.charCodeAt(0) >= 160 || 
               char === '\n' || char === '\r' || char === '\t'
