@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Encoder</title>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@300&display=swap" rel="stylesheet">
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="./assets/favicon.png" />
+  <link rel="shortcut icon" type="image/png" href="./assets/favicon.png" />
+  
+  <!-- Open Graph Meta Tags for Social Media Preview -->
+  <meta property="og:title" content="Incrypt - Web-Based Image Steganography Tool" />
+  <meta property="og:description" content="Hide secret messages inside images using advanced steganography techniques. Client-side, secure, and privacy-focused." />
+  <meta property="og:image" content="./assets/preview.png" />
+  <meta property="og:url" content="" />
+  <meta property="og:type" content="website" />
+  
+  <!-- Twitter Card Meta Tags -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Incrypt - Web-Based Image Steganography Tool" />
+  <meta name="twitter:description" content="Hide secret messages inside images using advanced steganography techniques. Client-side, secure, and privacy-focused." />
+  <meta name="twitter:image" content="./assets/preview.png" />
+  
+  <link rel="stylesheet" href="./styles/style.css" />
+</head>
+<body>
+  <!-- Header -->
+  <header class="main-header">
+    <img src="./assets/clean logo.png" alt="Logo" class="header-logo" />
+    <nav class="header-nav">
+      <a href="index.html" class="nav-button">Home</a>
+      <a href="http://localhost:3000/" class="nav-button">Encoder</a>
+      <a href="feed.html" class="nav-button">Feed</a>
+      <a href="documentation.html" class="nav-button">Documentation</a>
+    </nav>
+  </header>
+
+  <!-- Background Layers -->
+  
+  <canvas id="matrixCanvas"></canvas>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <img src="./assets/dotlock.png" alt="Mona Lisa" class="center-image" />
+  </main>
+
+  <!-- Title Image -->
+  <img src="./assets/incrypt title.png" alt="Incrypt Title" class="incrypt-title-img" />
+
+  <!-- Info Boxes Section -->
+  <section class="info-boxes-container">
+    <div class="info-box">
+      <h3>Fractionalized Text NFTs on Zora</h3>
+      <p>We've developed a system that allows anyone to mint and launch fractionalized text-based NFTs on the Zora protocol. These NFTs are uniquely embedded with encrypted or symbolic textual data, enabling both creators and collectors to tokenize written content with provenance, permanence, and tradeability.</p>
+    </div>
+    <div class="info-box">
+      <h3>Encrypted Communication Through Art</h3>
+      <p>This platform enables encrypted communication through visual media—allowing individuals, AI models (like LLMs), or communities to embed messages, contract addresses, or signals inside an image. Whether used for covert messaging, creative storytelling, or on-chain proofs of authorship, the potential applications are open-ended.</p>
+    </div>
+    <div class="info-box">
+      <h3>Anti-Snipe Infrastructure for Token Launches & Presales</h3>
+      <p>We've integrated anti-sniping mechanics into the platform's encoding process. Because the embedded content (e.g. smart contract address) must be manually decoded via our web portal, this prevents bots from automatically scanning social platforms and front-running launches—offering a new primitive for fair token distribution.</p>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <div class="content-spacer"></div>
+  <footer>
+    <img src="./assets/404.png" alt="404 Footer" class="footer-image" />
+    <div class="footer-social-links">
+      <img src="./assets/github.png" alt="GitHub" class="social-icon" />
+      <img src="./assets/x.png" alt="Twitter" class="social-icon" />
+    </div>
+  </footer>
+
+  <!-- Background Animation Scripts -->
+  <script src="./scripts/background-dots.js"></script>
+  <script src="./scripts/matrix.js"></script>
+
+ 
+</body>
+</html>

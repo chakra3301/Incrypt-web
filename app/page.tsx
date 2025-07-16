@@ -42,6 +42,7 @@ export default function Home() {
   const [shareSuccess, setShareSuccess] = useState(false);
   const [showShareForm, setShowShareForm] = useState(false);
   const [customDescription, setCustomDescription] = useState<string>("");
+  const defaultTitle = "GPT‑1 Stego PNG Maker";
 
   useEffect(() => {
     setMaxCanvas(getMaxCanvasSize());
@@ -164,11 +165,12 @@ export default function Home() {
     setShareSuccess(false);
     setShowShareForm(false);
     setCustomDescription("");
+    document.title = defaultTitle;
   };
 
   const shareToFeed = async () => {
     if (!dl) return;
-    
+    document.title = "incrypt app";
     setSharing(true);
     try {
       // Convert blob URL to data URL
@@ -203,12 +205,14 @@ export default function Home() {
         } else {
           throw new Error('Failed to post to feed');
         }
+        document.title = defaultTitle;
       };
       
       reader.readAsDataURL(blob);
     } catch (error) {
       console.error('Error posting:', error);
       alert('Failed to share to feed. Please try again.');
+      document.title = defaultTitle;
     } finally {
       setSharing(false);
     }
@@ -227,28 +231,21 @@ export default function Home() {
       {/* Matrix Canvas */}
       <canvas id="matrixCanvas"></canvas>
 
-      <main className="container" style={{ marginTop: '90px' }}>
-        <h1 className="text-2xl font-semibold mb-6">GPT‑1 Stego PNG Maker</h1>
+      {/* Title Image Above Container */}
+      <img src="/assets/incrypt title.png" alt="incrypt app title" className="mx-auto mb-0" style={{ maxWidth: '300px', height: 'auto' }} />
+      <main className="container" style={{ marginTop: '12px' }}>
 
         {/* Mode selector */}
         <div className="flex gap-4 justify-center mb-6">
           <button
             onClick={() => { setMode("encode"); clear(); }}
-            className={`px-4 py-2 rounded ${
-              mode === "encode" 
-                ? "bg-blue-600 text-white" 
-                : "bg-gray-200 text-gray-700 hover:bg-gray-300"
-            }`}
+            className={`custom-file-button ${mode === "encode" ? "active" : ""}`}
           >
             Encode Data → PNG
           </button>
           <button
             onClick={() => { setMode("decode"); clear(); }}
-            className={`px-4 py-2 rounded ${
-              mode === "decode" 
-                ? "bg-blue-600 text-white" 
-                : "bg-gray-200 text-gray-700 hover:bg-gray-300"
-            }`}
+            className={`custom-file-button ${mode === "decode" ? "active" : ""}`}
           >
             Decode PNG → Data
           </button>
@@ -259,15 +256,15 @@ export default function Home() {
           <div className="flex flex-col gap-4 w-full">
             {/* Cover image input */}
             <div>
-              <label className="block text-sm font-medium mb-2">
-                Select cover image (optional):
+              <label className="custom-file-label">
+                <span className="custom-file-button">Choose Image File</span>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => e.target.files && setImageFile(e.target.files[0])}
+                  className="hidden"
+                />
               </label>
-              <input
-                type="file"
-                accept="image/*"
-                onChange={(e) => e.target.files && setImageFile(e.target.files[0])}
-                className="w-full"
-              />
               <p className="text-sm text-gray-400 mt-1">
                 If no image provided, random pointillist art will be generated
               </p>
@@ -286,14 +283,14 @@ export default function Home() {
             <div className="flex gap-4 mb-2">
               <button
                 type="button"
-                className={`px-3 py-1 rounded ${encodeType === "file" ? "bg-blue-600 text-white" : "bg-gray-200 text-gray-700 hover:bg-gray-300"}`}
+                className={`custom-file-button ${encodeType === "file" ? "active" : ""}`}
                 onClick={() => setEncodeType("file")}
               >
                 File
               </button>
               <button
                 type="button"
-                className={`px-3 py-1 rounded ${encodeType === "text" ? "bg-blue-600 text-white" : "bg-gray-200 text-gray-700 hover:bg-gray-300"}`}
+                className={`custom-file-button ${encodeType === "text" ? "active" : ""}`}
                 onClick={() => setEncodeType("text")}
               >
                 Text
@@ -303,15 +300,15 @@ export default function Home() {
             {/* Data input */}
             {encodeType === "file" ? (
               <div>
-                <label className="block text-sm font-medium mb-2">
-                  Select data file to encode:
+                <label className="custom-file-label">
+                  <span className="custom-file-button">Choose Data File</span>
+                  <input
+                    type="file"
+                    accept="*"
+                    onChange={(e) => e.target.files && setDataFile(e.target.files[0])}
+                    className="hidden"
+                  />
                 </label>
-                <input
-                  type="file"
-                  accept="*"
-                  onChange={(e) => e.target.files && setDataFile(e.target.files[0])}
-                  className="w-full"
-                />
                 <p className="text-sm text-gray-400 mt-1">
                   Accepts any file type (.zst, .bin, .txt, etc.)
                 </p>
@@ -370,14 +367,14 @@ export default function Home() {
                 <input
                   type="range"
                   min="1"
-                  max={preserveQuality ? 4 : MAX_BITS}
+                  max={preserveQuality ? 5 : MAX_BITS}
                   value={bits}
                   onChange={(e) => setBits(Number(e.target.value))}
                   className="w-full"
                 />
                 <p className="text-xs text-gray-400 mt-1">
                   {preserveQuality 
-                    ? "Limited to 4 bits for better quality preservation"
+                    ? "Use 4 bits or less for better quality preservation"
                     : "Higher values store more data but may be more noticeable"}
                 </p>
               </div>
@@ -458,7 +455,7 @@ export default function Home() {
                   });
                 }}
                 disabled={processing}
-                className="bg-green-600 text-white px-6 py-3 rounded hover:bg-green-700 disabled:bg-gray-400"
+                className="custom-file-button"
               >
                 {processing ? "Processing..." : "Generate Stego PNG"}
               </button>
@@ -479,15 +476,15 @@ export default function Home() {
         {mode === "decode" && !dl && (
           <div className="flex flex-col gap-4 w-full">
             <div>
-              <label className="block text-sm font-medium mb-2">
-                Select PNG file to decode:
+              <label className="custom-file-label">
+                <span className="custom-file-button">Choose PNG File</span>
+                <input
+                  type="file"
+                  accept="image/png"
+                  onChange={(e) => e.target.files && handleDecode(e.target.files[0])}
+                  className="hidden"
+                />
               </label>
-              <input
-                type="file"
-                accept="image/png"
-                onChange={(e) => e.target.files && handleDecode(e.target.files[0])}
-                className="w-full"
-              />
             </div>
 
             {processing && (
@@ -507,14 +504,14 @@ export default function Home() {
             <a
               href={dl}
               download="stego.png"
-              className="inline-block bg-blue-600 text-white px-6 py-3 rounded hover:bg-blue-700"
+              className="custom-file-button"
             >
               Download PNG
             </a>
             <button 
               onClick={() => setShowShareForm(!showShareForm)}
               disabled={sharing}
-              className="ml-4 bg-green-600 text-white px-6 py-3 rounded hover:bg-green-700 disabled:bg-gray-400"
+              className="ml-4 custom-file-button"
             >
               {sharing ? "Sharing..." : shareSuccess ? "✓ Shared!" : "Share to Feed"}
             </button>
@@ -545,7 +542,7 @@ export default function Home() {
                   <button
                     onClick={shareToFeed}
                     disabled={sharing}
-                    className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 disabled:bg-gray-400"
+                    className="custom-file-button"
                   >
                     {sharing ? "Sharing..." : "Post to Feed"}
                   </button>
@@ -553,8 +550,9 @@ export default function Home() {
                     onClick={() => {
                       setShowShareForm(false);
                       setCustomDescription("");
+                      document.title = defaultTitle;
                     }}
-                    className="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700"
+                    className="custom-file-button"
                   >
                     Cancel
                   </button>
