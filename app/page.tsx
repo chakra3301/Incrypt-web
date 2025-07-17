@@ -587,9 +587,13 @@ export default function Home() {
               </div>
             )}
             {decodedText && (
-              <div className="mt-8 mx-auto max-w-xl bg-gray-900 text-green-300 p-4 rounded border border-green-600 text-left whitespace-pre-wrap break-words">
-                <h3 className="font-bold mb-2 text-green-200">Decoded Text Message:</h3>
-                <div style={{ fontFamily: 'monospace' }}>{decodedText}</div>
+              <div className="mt-8 mx-auto max-w-xl">
+                <label className="block text-sm font-medium mb-2 text-white">
+                  Decoded Text Message:
+                </label>
+                <div className="w-full p-2 rounded border border-gray-500 bg-black text-white whitespace-pre-wrap break-words" style={{ fontFamily: 'monospace', minHeight: '120px' }}>
+                  {decodedText}
+                </div>
               </div>
             )}
           </div>
