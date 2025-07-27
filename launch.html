@@ -237,11 +237,23 @@
       const message = document.getElementById('message');
       const submitButton = e.target.querySelector('button[type="submit"]');
       
-      // Use FormData directly as the backend expects multipart/form-data
-      // The backend will handle the form fields: name, symbol, supply, description, recipient, logo
+      // Create FormData and append each field explicitly
+      const formDataToSend = new FormData();
+      
+      // Append form fields
+      formDataToSend.append('name', formData.get('name'));
+      formDataToSend.append('symbol', formData.get('symbol'));
+      formDataToSend.append('supply', formData.get('supply'));
+      formDataToSend.append('description', formData.get('description'));
+      formDataToSend.append('recipient', formData.get('recipient'));
+      
+      // Append logo file if provided
+      const logoFile = formData.get('logo');
+      if (logoFile && logoFile.size > 0) {
+        formDataToSend.append('logo', logoFile);
+      }
       
       // Validate file upload
-      const logoFile = formData.get('logo');
       if (logoFile && logoFile.size > 0) {
         console.log('Logo file found:', logoFile.name, 'Size:', logoFile.size, 'Type:', logoFile.type);
         // Note: Logo handling would need to be implemented separately if needed
@@ -256,7 +268,7 @@
       submitButton.textContent = "Launching...";
       
       try {
-        const result = await launchToken(formData);
+        const result = await launchToken(formDataToSend);
         message.innerHTML = `✅ ${result.message || 'Token launched successfully!'}<br>Address: ${result.address || 'N/A'}<br>Transaction: ${result.hash || 'N/A'}`;
         message.className = "message success";
       } catch (error) {
