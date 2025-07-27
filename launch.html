@@ -34,10 +34,12 @@
     .launch-container {
       min-height: 100vh;
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       justify-content: center;
-      padding: 120px 20px 20px 20px;
+      padding: 80px 20px 20px 20px;
       background: rgb(0, 0, 0);
+      position: relative;
+      z-index: 10;
     }
     
     .launch-form {
@@ -49,6 +51,8 @@
       border-radius: 15px;
       border: 1px solid rgba(255, 255, 255, 0.2);
       box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      position: relative;
+      z-index: 20;
     }
     
     .launch-form h2 {
@@ -86,7 +90,7 @@
     }
     
     .launch-form button {
-      background: linear-gradient(45deg, #4CAF50, #45a049);
+      background: linear-gradient(45deg, #060606, #3b3b3b);
       color: white;
       border: none;
       padding: 1rem;
@@ -101,7 +105,7 @@
     }
     
     .launch-form button:hover {
-      background: linear-gradient(45deg, #45a049, #4CAF50);
+      background: linear-gradient(45deg, #2b2b2b, #000000);
       transform: translateY(-2px);
       box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
     }
@@ -140,21 +144,21 @@
       color: #ffc107;
     }
     
-    /* Responsive adjustments */
-    @media (max-width: 768px) {
-      .launch-container {
-        padding: 100px 15px 15px 15px;
-      }
+         /* Responsive adjustments */
+     @media (max-width: 768px) {
+       .launch-container {
+         padding: 70px 15px 15px 15px;
+       }
       
       .launch-form {
         padding: 1.5rem;
       }
     }
     
-    @media (max-width: 480px) {
-      .launch-container {
-        padding: 90px 10px 10px 10px;
-      }
+         @media (max-width: 480px) {
+       .launch-container {
+         padding: 60px 10px 10px 10px;
+       }
       
       .launch-form {
         padding: 1rem;
@@ -179,8 +183,7 @@
     </nav>
   </header>
 
-  <!-- Background Canvas -->
-  <canvas id="matrixCanvas"></canvas>
+
 
   <!-- Main Content -->
   <div class="launch-container">
@@ -199,7 +202,6 @@
 
   <!-- Background Animation Scripts -->
   <script src="./scripts/background-dots.js"></script>
-  <script src="./scripts/matrix.js"></script>
 
   <script>
     async function launchToken(formData) {
