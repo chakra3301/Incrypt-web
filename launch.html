@@ -206,11 +206,14 @@
   <script>
     const API_URL = 'https://zora-launcher-backend-clean-6z7zcjq0t-chakras-projects-f36100ee.vercel.app';
     
-    async function launchToken(formData) {
+    async function launchToken(formDataObj) {
       try {
         const response = await fetch(`${API_URL}/api/launch`, {
           method: 'POST',
-          body: formData
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(formDataObj)
         });
 
         const result = await response.json();
@@ -237,10 +240,19 @@
       const message = document.getElementById('message');
       const submitButton = e.target.querySelector('button[type="submit"]');
       
+      // Convert FormData to JSON object
+      const formDataObj = {};
+      for (let [key, value] of formData.entries()) {
+        if (key !== 'logo') { // Skip logo file for now
+          formDataObj[key] = value;
+        }
+      }
+      
       // Validate file upload
       const logoFile = formData.get('logo');
       if (logoFile && logoFile.size > 0) {
         console.log('Logo file found:', logoFile.name, 'Size:', logoFile.size, 'Type:', logoFile.type);
+        // Note: Logo handling would need to be implemented separately if needed
       } else {
         console.log('No logo file uploaded or file is empty');
       }
@@ -252,7 +264,7 @@
       submitButton.textContent = "Launching...";
       
       try {
-        const result = await launchToken(formData);
+        const result = await launchToken(formDataObj);
         message.innerHTML = `✅ ${result.message || 'Token launched successfully!'}<br>Address: ${result.address || 'N/A'}<br>Transaction: ${result.hash || 'N/A'}`;
         message.className = "message success";
       } catch (error) {
