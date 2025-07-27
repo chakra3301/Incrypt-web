@@ -213,10 +213,9 @@
 
         const result = await response.json();
         
-        if (response.ok && result.address && result.hash) {
+        if (response.ok) {
           // Real token created!
-          console.log('Token launched:', result.address);
-          console.log('Transaction:', result.hash);
+          console.log('Token launched:', result);
           return result;
         } else {
           // Handle errors (insufficient funds, etc.)
@@ -252,7 +251,7 @@
       
       try {
         const result = await launchToken(formData);
-        message.innerHTML = `✅ Token launched successfully!<br>Address: ${result.address}<br>Transaction: ${result.hash}`;
+        message.innerHTML = `✅ ${result.message || 'Token launched successfully!'}<br>Address: ${result.address || 'N/A'}<br>Transaction: ${result.hash || 'N/A'}`;
         message.className = "message success";
       } catch (error) {
         message.textContent = `❌ Error: ${error.message}`;
