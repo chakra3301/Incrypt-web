@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Launch Your Token</title>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@300&display=swap" rel="stylesheet">
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="./assets/favicon.png" />
+  <link rel="shortcut icon" type="image/png" href="./assets/favicon.png" />
+  
+  <!-- Open Graph Meta Tags for Social Media Preview -->
+  <meta property="og:title" content="Incrypt - Token Launch Platform" />
+  <meta property="og:description" content="Launch your tokens on Zora with our easy-to-use platform." />
+  <meta property="og:image" content="./assets/preview.png" />
+  <meta property="og:url" content="" />
+  <meta property="og:type" content="website" />
+  
+  <!-- Twitter Card Meta Tags -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Incrypt - Token Launch Platform" />
+  <meta name="twitter:description" content="Launch your tokens on Zora with our easy-to-use platform." />
+  <meta name="twitter:image" content="./assets/preview.png" />
+  
+  <link rel="stylesheet" href="./styles/style.css" />
+  
+  <style>
+    /* Additional styles for the launch form */
+    .launch-container {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 120px 20px 20px 20px;
+      background: rgb(0, 0, 0);
+    }
+    
+    .launch-form {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      padding: 2rem;
+      max-width: 500px;
+      width: 100%;
+      border-radius: 15px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    }
+    
+    .launch-form h2 {
+      color: white;
+      text-align: center;
+      margin-bottom: 1.5rem;
+      font-family: 'Orbitron', monospace;
+      font-weight: 300;
+    }
+    
+    .launch-form input,
+    .launch-form textarea {
+      width: 100%;
+      padding: 0.75rem;
+      margin: 0.5rem 0;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+      font-family: 'Orbitron', monospace;
+      font-weight: 300;
+      box-sizing: border-box;
+    }
+    
+    .launch-form input::placeholder,
+    .launch-form textarea::placeholder {
+      color: rgba(255, 255, 255, 0.6);
+    }
+    
+    .launch-form input:focus,
+    .launch-form textarea:focus {
+      outline: none;
+      border-color: rgba(255, 255, 255, 0.6);
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+    }
+    
+    .launch-form button {
+      background: linear-gradient(45deg, #4CAF50, #45a049);
+      color: white;
+      border: none;
+      padding: 1rem;
+      width: 100%;
+      cursor: pointer;
+      border-radius: 8px;
+      font-family: 'Orbitron', monospace;
+      font-weight: 300;
+      font-size: 1.1rem;
+      margin-top: 1rem;
+      transition: all 0.3s ease;
+    }
+    
+    .launch-form button:hover {
+      background: linear-gradient(45deg, #45a049, #4CAF50);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+    }
+    
+    .launch-form button:disabled {
+      background: rgba(255, 255, 255, 0.2);
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+    
+    .message {
+      margin-top: 1rem;
+      padding: 0.75rem;
+      border-radius: 8px;
+      text-align: center;
+      font-family: 'Orbitron', monospace;
+      font-weight: 300;
+    }
+    
+    .message.success {
+      background: rgba(76, 175, 80, 0.2);
+      border: 1px solid rgba(76, 175, 80, 0.5);
+      color: #4CAF50;
+    }
+    
+    .message.error {
+      background: rgba(244, 67, 54, 0.2);
+      border: 1px solid rgba(244, 67, 54, 0.5);
+      color: #f44336;
+    }
+    
+    .message.loading {
+      background: rgba(255, 193, 7, 0.2);
+      border: 1px solid rgba(255, 193, 7, 0.5);
+      color: #ffc107;
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .launch-container {
+        padding: 100px 15px 15px 15px;
+      }
+      
+      .launch-form {
+        padding: 1.5rem;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .launch-container {
+        padding: 90px 10px 10px 10px;
+      }
+      
+      .launch-form {
+        padding: 1rem;
+      }
+      
+      .launch-form h2 {
+        font-size: 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="main-header">
+    <img src="./assets/clean logo.png" alt="Logo" class="header-logo" />
+    <nav class="header-nav">
+      <a href="index.html" class="nav-button">Home</a>
+      <a href="https://incryptor-exo.vercel.app/" class="nav-button">Encoder</a>
+      <a href="feed.html" class="nav-button">Feed</a>
+      <a href="documentation.html" class="nav-button">Documentation</a>
+      <a href="launch.html" class="nav-button">Launch</a>
+    </nav>
+  </header>
+
+  <!-- Background Canvas -->
+  <canvas id="matrixCanvas"></canvas>
+
+  <!-- Main Content -->
+  <div class="launch-container">
+    <form id="launchForm" class="launch-form">
+      <h2>Launch Your Token</h2>
+      <input type="text" name="name" placeholder="Token Name" required />
+      <input type="text" name="symbol" placeholder="Token Symbol" required />
+      <input type="number" name="supply" placeholder="Total Supply" required />
+      <textarea name="description" placeholder="Token Description" rows="3"></textarea>
+      <input type="text" name="recipient" placeholder="Your Wallet Address" required />
+      <input type="file" name="logo" accept="image/*" />
+      <button type="submit">Launch Token</button>
+      <div class="message" id="message"></div>
+    </form>
+  </div>
+
+  <!-- Background Animation Scripts -->
+  <script src="./scripts/background-dots.js"></script>
+  <script src="./scripts/matrix.js"></script>
+
+  <script>
+    async function launchToken(formData) {
+      try {
+        const response = await fetch('https://zora-launcher-backend-public2-r3vo4e8c3.vercel.app/api/launch', {
+          method: 'POST',
+          body: formData // FormData object with your form fields
+        });
+
+        const result = await response.json();
+        
+        if (response.ok) {
+          console.log('Token launched successfully:', result);
+          return result;
+        } else {
+          throw new Error(result.message || 'Failed to launch token');
+        }
+      } catch (error) {
+        console.error('Error launching token:', error);
+        throw error;
+      }
+    }
+
+    // Usage with your form
+    document.getElementById('launchForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const formData = new FormData(e.target);
+      const message = document.getElementById('message');
+      const submitButton = e.target.querySelector('button[type="submit"]');
+      
+      // Update UI for loading state
+      message.textContent = "Launching token...";
+      message.className = "message loading";
+      submitButton.disabled = true;
+      submitButton.textContent = "Launching...";
+      
+      try {
+        const result = await launchToken(formData);
+        message.textContent = `✅ Token launched! Address: ${result.address}`;
+        message.className = "message success";
+      } catch (error) {
+        message.textContent = `❌ Error: ${error.message}`;
+        message.className = "message error";
+      } finally {
+        // Reset button state
+        submitButton.disabled = false;
+        submitButton.textContent = "Launch Token";
+      }
+    });
+  </script>
+
+</body>
+</html>
