@@ -248,6 +248,9 @@
         }
       }
       
+      // Add required metadata image field (using a placeholder for now)
+      formDataObj.image = "https://via.placeholder.com/400x400/000000/FFFFFF?text=Token+Logo";
+      
       // Validate file upload
       const logoFile = formData.get('logo');
       if (logoFile && logoFile.size > 0) {
