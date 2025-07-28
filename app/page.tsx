@@ -132,12 +132,16 @@ export default function Home() {
           fileSize: data.fileSize,
           detectedType: data.detectedType
         };
-        // If it's text, read and display
-        if (
+        // Check if the worker detected a specific file type
+        if (data.detectedType && !data.detectedType.toLowerCase().includes("text")) {
+          // Worker detected a non-text file type - offer download
+          console.log(`Worker detected file type: ${data.detectedType}, offering download`);
+        } else if (
           data.blob &&
           (data.detectedType?.toLowerCase().includes("text") ||
             data.blob.type === "text/plain")
         ) {
+          // Worker detected text or blob is text/plain - display as text
           const text = await data.blob.text();
           setDecodedText(text);
         } else if (data.blob && data.blob.size < 1024 * 1024) {
