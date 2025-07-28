@@ -135,7 +135,7 @@ export default function Home() {
         // Check if the worker detected a specific file type
         if (data.detectedType && !data.detectedType.toLowerCase().includes("text")) {
           // Worker detected a non-text file type - offer download
-          console.log(`Worker detected file type: ${data.detectedType}, offering download`);
+          // The dl state is already set with the blob URL, so download link will be available
         } else if (
           data.blob &&
           (data.detectedType?.toLowerCase().includes("text") ||
@@ -157,18 +157,14 @@ export default function Home() {
             
             if (printableRatio > 0.8) {
               setDecodedText(text);
-            } else {
-              // It's a file, not text - offer download instead
-              console.log('Decoded data is a file, offering download');
             }
+            // If printableRatio <= 0.8, it's a file - dl state is already set for download
           } catch (e) {
             // If reading as text fails, it's probably not text
-            console.log('Decoded data is not text');
+            // dl state is already set for download
           }
-        } else {
-          // It's a file, not text - offer download instead
-          console.log('Decoded data is a file, offering download');
         }
+        // For all other cases, dl state is already set for download
       }
       if (data.error) {
         alert(data.error);
@@ -534,10 +530,10 @@ export default function Home() {
           <div className="text-center">
             <a
               href={dl}
-              download="stego.png"
+              download={(window as any).decodeResult?.suggestedName || "decoded_data"}
               className="custom-file-button"
             >
-              Download PNG
+              Download {(window as any).decodeResult?.detectedType || "File"}
             </a>
             <button 
               onClick={() => setShowShareForm(!showShareForm)}
