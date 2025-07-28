@@ -153,11 +153,17 @@ export default function Home() {
             
             if (printableRatio > 0.8) {
               setDecodedText(text);
+            } else {
+              // It's a file, not text - offer download instead
+              console.log('Decoded data is a file, offering download');
             }
           } catch (e) {
             // If reading as text fails, it's probably not text
             console.log('Decoded data is not text');
           }
+        } else {
+          // It's a file, not text - offer download instead
+          console.log('Decoded data is a file, offering download');
         }
       }
       if (data.error) {
