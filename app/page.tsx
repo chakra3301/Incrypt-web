@@ -530,10 +530,10 @@ export default function Home() {
           <div className="text-center">
             <a
               href={dl}
-              download={(window as any).decodeResult?.suggestedName || "decoded_data"}
+              download={mode === "encode" ? "stego.png" : (window as any).decodeResult?.suggestedName || "decoded_data"}
               className="custom-file-button"
             >
-              Download {(window as any).decodeResult?.detectedType || "File"}
+              Download {mode === "encode" ? "Encoded PNG" : "Decoded Data"}
             </a>
             <button 
               onClick={() => setShowShareForm(!showShareForm)}
