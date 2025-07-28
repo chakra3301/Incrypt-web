@@ -234,7 +234,17 @@
         
         if (response.ok) {
           console.log('Token launched:', result);
-          message.innerHTML = `✅ ${result.message || 'Token launched successfully!'}<br>Address: ${result.address || 'N/A'}<br>Transaction: ${result.hash || 'N/A'}`;
+          const tokenLink = result.address ? `https://zora.co/coin/base:${result.address.toLowerCase()}?referrer=0xc3ebb1c2343a4ce68d234d76e98a799046673c6e` : '';
+          message.innerHTML = `
+            <div style="font-size: 0.9rem; line-height: 1.4;">
+              ✅ <strong>${result.message || 'Token launched successfully!'}</strong><br>
+              <span style="font-size: 0.8rem;">
+                Address: <code style="font-size: 0.75rem;">${result.address || 'N/A'}</code><br>
+                ${tokenLink ? `<a href="${tokenLink}" target="_blank" style="color: #4CAF50; text-decoration: underline;">View on Zora ↗</a><br>` : ''}
+                Transaction: <code style="font-size: 0.75rem;">${result.hash || 'N/A'}</code>
+              </span>
+            </div>
+          `;
           message.className = "message success";
         } else {
           throw new Error(result.error || result.message || 'Failed to launch token');
