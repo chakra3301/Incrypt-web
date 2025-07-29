@@ -252,6 +252,7 @@ export default function Home() {
           <a href="https://www.incrypt.net/" className="nav-button">Home</a>
           <a href="https://www.incrypt.net/feed.html" className="nav-button">Feed</a>
           <a href="https://www.incrypt.net/documentation.html" className="nav-button">Documentation</a>
+          <a href="https://www.incrypt.net/launch.html" className="nav-button">Launch</a>
         </nav>
       </header>
 
