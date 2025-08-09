@@ -135,7 +135,9 @@ export default function Home() {
           detectedType: data.detectedType
         };
         // Check if the worker detected a specific file type
-        if (data.detectedType && !data.detectedType.toLowerCase().includes("text")) {
+        if (data.text) {
+          setDecodedText(data.text);
+        } else if (data.detectedType && !data.detectedType.toLowerCase().includes("text")) {
           // Worker detected a non-text file type - offer download
           // The dl state is already set with the blob URL, so download link will be available
         } else if (

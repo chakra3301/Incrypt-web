@@ -261,10 +261,12 @@ self.onmessage = async ({ data }: MessageEvent<DecodeMessage>) => {
     
     // Create blob with detected or original MIME type
     const blob = new Blob([actualData], { type: mimeType });
+    const textPreview = isTextType ? new TextDecoder().decode(actualData) : undefined;
     
     postMessage({ 
       done: true, 
       blob,
+      text: textPreview,
       suggestedName,
       fileSize: actualData.length,
       detectedType: description
