@@ -251,7 +251,8 @@ self.onmessage = async ({ data }: MessageEvent<DecodeMessage>) => {
     const detected = detectFileType(actualData);
     const mimeType = preferredMime || detected.mimeType;
     const suggestedName = preferredName || detected.suggestedName;
-    const description = preferredName ? 'Original file' : detected.description;
+    const isTextType = mimeType.startsWith('text/') || mimeType === 'application/json';
+    const description = isTextType ? 'Plain Text' : (preferredName ? 'Original file' : detected.description);
     
     // Log first few bytes for debugging
     const firstBytes = Array.from(actualData.slice(0, 20)).map(b => b.toString(16).padStart(2, '0')).join(' ');
