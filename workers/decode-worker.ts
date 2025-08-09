@@ -195,11 +195,20 @@ self.onmessage = async ({ data }: MessageEvent<DecodeMessage>) => {
     }
     
     if (hasMarker && fullData.length >= 19) {
-      // Read the compressed size from header to know how much data to use
+      // Read header fields from the concatenated data
       const view = new DataView(fullData.buffer, fullData.byteOffset, fullData.byteLength);
+      const flags = view.getUint8(14);
       const compressedSize = view.getUint32(15, true);
-      actualDataEnd = 19 + compressedSize; // header + data
-      console.log(`Found STEGO3 header, actual data size: ${actualDataEnd} bytes (header: 19, data: ${compressedSize})`);
+      let dataOffset = 19;
+      if ((flags & 0x02) !== 0) {
+        // There is an extra metadata block: FNLEN(2) + FNB + MMLEN(2) + MMB
+        const fnLen = view.getUint16(19, true);
+        const mmLenOffset = 19 + 2 + fnLen;
+        const mmLen = view.getUint16(mmLenOffset, true);
+        dataOffset = mmLenOffset + 2 + mmLen;
+      }
+      actualDataEnd = dataOffset + compressedSize;
+      console.log(`Found STEGO3 header, dataOffset=${dataOffset}, dataSize=${compressedSize}, end=${actualDataEnd}`);
       console.log(`Total extracted: ${fullData.length} bytes, using first ${actualDataEnd} bytes`);
     }
     
@@ -208,6 +217,8 @@ self.onmessage = async ({ data }: MessageEvent<DecodeMessage>) => {
     
     const decoded = decodeWithMetadata(trimmedData);
     let actualData: Uint8Array;
+    let preferredName: string | undefined;
+    let preferredMime: string | undefined;
     
     if (decoded) {
       console.log(`Successfully decoded with metadata:`);
@@ -217,6 +228,8 @@ self.onmessage = async ({ data }: MessageEvent<DecodeMessage>) => {
       console.log(`  Actual extracted data size: ${decoded.data.length} bytes`);
       console.log(`  Total data with metadata: ${fullData.length} bytes`);
       console.log(`  Checksum present: ${decoded.metadata.checksum !== undefined}`);
+      if (decoded.metadata.filename) preferredName = decoded.metadata.filename;
+      if (decoded.metadata.mimeType) preferredMime = decoded.metadata.mimeType;
       
       // Handle decompression if needed
       if (decoded.metadata.compressed) {
@@ -234,23 +247,26 @@ self.onmessage = async ({ data }: MessageEvent<DecodeMessage>) => {
       actualData = fullData;
     }
     
-    // Try to detect file type from magic numbers
-    const fileInfo = detectFileType(actualData);
+    // Start with type detection, then override with explicit metadata if present
+    const detected = detectFileType(actualData);
+    const mimeType = preferredMime || detected.mimeType;
+    const suggestedName = preferredName || detected.suggestedName;
+    const description = preferredName ? 'Original file' : detected.description;
     
     // Log first few bytes for debugging
     const firstBytes = Array.from(actualData.slice(0, 20)).map(b => b.toString(16).padStart(2, '0')).join(' ');
     console.log('First 20 bytes:', firstBytes);
-    console.log('Detected type:', fileInfo.description);
+    console.log('Detected type:', description);
     
-    // Create blob with detected MIME type
-    const blob = new Blob([actualData], { type: fileInfo.mimeType });
+    // Create blob with detected or original MIME type
+    const blob = new Blob([actualData], { type: mimeType });
     
     postMessage({ 
       done: true, 
       blob,
-      suggestedName: fileInfo.suggestedName,
+      suggestedName,
       fileSize: actualData.length,
-      detectedType: fileInfo.description
+      detectedType: description
     });
     
   } catch (error) {

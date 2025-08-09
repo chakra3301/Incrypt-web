@@ -106,7 +106,9 @@ export default function Home() {
       imageURL,
       bits,
       autoExpand,
-      maxCanvas // Pass the detected max canvas size
+      maxCanvas, // Pass the detected max canvas size
+      originalName: dataFile.name,
+      originalMime: dataFile.type || undefined
     });
   };
 
@@ -479,7 +481,9 @@ export default function Home() {
                     imageURL,
                     bits,
                     autoExpand,
-                    maxCanvas
+                    maxCanvas,
+                    originalName: fileToEncode.name,
+                    originalMime: fileToEncode.type || undefined
                   });
                 }}
                 disabled={processing}

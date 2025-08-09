@@ -36,25 +36,59 @@ export function encodeWithMetadata(data: Uint8Array, metadata: FileMetadata): Ui
   view.setUint32(6, metadata.originalSize, true);
   view.setUint32(10, checksum, true);
   
-  // Write flags (bit 0 = compressed)
-  const flags = (metadata.compressed ? 0x01 : 0x00);
+  // Build optional filename/mimeType metadata block
+  const hasExtraMeta = Boolean(metadata.filename || metadata.mimeType);
+  const encoder = new TextEncoder();
+  const filenameBytes = metadata.filename ? encoder.encode(metadata.filename) : new Uint8Array(0);
+  const mimeBytes = metadata.mimeType ? encoder.encode(metadata.mimeType) : new Uint8Array(0);
+  let extraMeta: Uint8Array | undefined;
+  if (hasExtraMeta) {
+    // Layout: FNLEN(2) + FNB(FNLEN) + MMLEN(2) + MMB(MMLEN)
+    const metaHeader = new Uint8Array(4);
+    const metaView = new DataView(metaHeader.buffer);
+    metaView.setUint16(0, filenameBytes.length, true);
+    metaView.setUint16(2, mimeBytes.length, true);
+    extraMeta = new Uint8Array(4 + filenameBytes.length + mimeBytes.length);
+    extraMeta.set(metaHeader, 0);
+    extraMeta.set(filenameBytes, 4);
+    extraMeta.set(mimeBytes, 4 + filenameBytes.length);
+  }
+
+  // Write flags (bit 0 = compressed, bit 1 = has extra meta)
+  const flags = (metadata.compressed ? 0x01 : 0x00) | (hasExtraMeta ? 0x02 : 0x00);
   view.setUint8(14, flags);
   
   // Write compressed size
   view.setUint32(15, metadata.compressedSize || data.length, true);
   
-  // Combine header and data
-  const result = new Uint8Array(header.length + data.length);
-  result.set(header, 0);
-  result.set(data, header.length);
-  
-  // Debug logging
-  console.log(`[encodeWithMetadata] Created header+data: ${result.length} bytes`);
-  console.log(`  Header (19 bytes): ${Array.from(header).map(b => b.toString(16).padStart(2, '0')).join(' ')}`);
-  console.log(`  Data starts with: ${Array.from(data.slice(0, 20)).map(b => b.toString(16).padStart(2, '0')).join(' ')}`);
-  console.log(`  Result starts with: ${Array.from(result.slice(0, 40)).map(b => b.toString(16).padStart(2, '0')).join(' ')}`);
-  
-  return result;
+  // Combine header + optional extra meta + data
+  if (extraMeta) {
+    const result = new Uint8Array(header.length + extraMeta.length + data.length);
+    result.set(header, 0);
+    result.set(extraMeta, header.length);
+    result.set(data, header.length + extraMeta.length);
+    
+    // Debug logging
+    console.log(`[encodeWithMetadata] Created header+extraMeta+data: ${result.length} bytes`);
+    console.log(`  Header (19 bytes): ${Array.from(header).map(b => b.toString(16).padStart(2, '0')).join(' ')}`);
+    console.log(`  Extra meta (${extraMeta.length} bytes) FNLEN=${filenameBytes.length}, MMLEN=${mimeBytes.length}`);
+    console.log(`  Data starts with: ${Array.from(data.slice(0, 20)).map(b => b.toString(16).padStart(2, '0')).join(' ')}`);
+    console.log(`  Result starts with: ${Array.from(result.slice(0, 40)).map(b => b.toString(16).padStart(2, '0')).join(' ')}`);
+    
+    return result;
+  } else {
+    const result = new Uint8Array(header.length + data.length);
+    result.set(header, 0);
+    result.set(data, header.length);
+    
+    // Debug logging
+    console.log(`[encodeWithMetadata] Created header+data: ${result.length} bytes`);
+    console.log(`  Header (19 bytes): ${Array.from(header).map(b => b.toString(16).padStart(2, '0')).join(' ')}`);
+    console.log(`  Data starts with: ${Array.from(data.slice(0, 20)).map(b => b.toString(16).padStart(2, '0')).join(' ')}`);
+    console.log(`  Result starts with: ${Array.from(result.slice(0, 40)).map(b => b.toString(16).padStart(2, '0')).join(' ')}`);
+    
+    return result;
+  }
 }
 
 export function decodeWithMetadata(data: Uint8Array): { data: Uint8Array; metadata: FileMetadata } | null {
@@ -144,12 +178,42 @@ export function decodeWithMetadata(data: Uint8Array): { data: Uint8Array; metada
   const compressedSize = view.getUint32(15, true);
   
   const compressed = (flags & 0x01) !== 0;
+  const hasExtraMeta = (flags & 0x02) !== 0;
+  let filename: string | undefined;
+  let mimeType: string | undefined;
+  
+  // Determine where data starts
+  let dataOffset = 19;
+  if (hasExtraMeta) {
+    try {
+      // FNLEN(2) + FNB(FNLEN) + MMLEN(2) + MMB(MMLEN)
+      const fnLen = view.getUint16(dataOffset, true);
+      const fnStart = dataOffset + 2;
+      const mmLenOffset = fnStart + fnLen;
+      const mmLen = view.getUint16(mmLenOffset, true);
+      const mmStart = mmLenOffset + 2;
+      const nextOffset = mmStart + mmLen;
+      
+      if (fnLen > 0 && fnStart + fnLen <= data.byteOffset + data.byteLength) {
+        const fnBytes = data.slice(fnStart, fnStart + fnLen);
+        filename = new TextDecoder().decode(fnBytes);
+      }
+      if (mmLen > 0 && mmStart + mmLen <= data.byteOffset + data.byteLength) {
+        const mmBytes = data.slice(mmStart, mmStart + mmLen);
+        mimeType = new TextDecoder().decode(mmBytes);
+      }
+      dataOffset = nextOffset;
+    } catch (e) {
+      console.warn('Failed to parse extra metadata block, falling back to default offsets');
+      dataOffset = 19; // fallback
+    }
+  }
   
   // Extract actual data
-  const actualData = data.slice(19, 19 + compressedSize);
+  const actualData = data.slice(dataOffset, dataOffset + compressedSize);
   
   console.log(`[decodeWithMetadata] Extracting compressed data:`);
-  console.log(`  Data starts at byte 19, length: ${compressedSize}`);
+  console.log(`  Data starts at byte ${dataOffset}, length: ${compressedSize}`);
   console.log(`  First 40 bytes of full data: ${Array.from(data.slice(0, 40)).map(b => b.toString(16).padStart(2, '0')).join(' ')}`);
   console.log(`  Extracted data first 20 bytes: ${Array.from(actualData.slice(0, 20)).map(b => b.toString(16).padStart(2, '0')).join(' ')}`);
   
@@ -181,7 +245,9 @@ export function decodeWithMetadata(data: Uint8Array): { data: Uint8Array; metada
       originalSize,
       checksum: storedChecksum,
       compressed,
-      compressedSize
+      compressedSize,
+      filename,
+      mimeType
     }
   };
 }

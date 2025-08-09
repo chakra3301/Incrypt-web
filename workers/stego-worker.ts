@@ -9,6 +9,8 @@ interface EncodeMessage {
   imageURL?: string;
   bits?: number;
   autoExpand?: boolean;
+  originalName?: string;
+  originalMime?: string;
 }
 
 self.onmessage = async ({ data }: MessageEvent<EncodeMessage>) => {
@@ -107,6 +109,8 @@ self.onmessage = async ({ data }: MessageEvent<EncodeMessage>) => {
     originalSize: rawFileData.length,
     compressed: false,
     compressedSize: rawFileData.length,
+    filename: data.originalName,
+    mimeType: data.originalMime,
   });
 
   console.log("=== FILE SIZE CALCULATION ===");
