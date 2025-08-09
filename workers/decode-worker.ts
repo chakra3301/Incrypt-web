@@ -214,10 +214,8 @@ self.onmessage = async ({ data }: MessageEvent<DecodeMessage>) => {
       console.log(`Total extracted: ${fullData.length} bytes, using first ${actualDataEnd} bytes`);
     }
     
-    // Only use the actual data, not the padding
-    const trimmedData = fullData.slice(0, actualDataEnd);
-    
-    const decoded = decodeWithMetadata(trimmedData);
+    // Let metadata decoder determine exact offsets; use fullData to avoid premature truncation
+    const decoded = decodeWithMetadata(fullData);
     let actualData: Uint8Array;
     let preferredName: string | undefined;
     let preferredMime: string | undefined;

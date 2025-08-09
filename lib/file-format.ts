@@ -211,11 +211,13 @@ export function decodeWithMetadata(data: Uint8Array): { data: Uint8Array; metada
     }
   }
   
-  // Extract actual data
-  const actualData = data.slice(dataOffset, dataOffset + compressedSize);
+  // Extract actual data with clamped bounds
+  const start = Math.max(0, Math.min(dataOffset, data.length));
+  const end = Math.max(start, Math.min(dataOffset + compressedSize, data.length));
+  const actualData = data.slice(start, end);
   
   console.log(`[decodeWithMetadata] Extracting compressed data:`);
-  console.log(`  Data starts at byte ${dataOffset}, length: ${compressedSize}`);
+  console.log(`  Data starts at byte ${start}, length: ${end - start} (requested ${compressedSize})`);
   console.log(`  First 40 bytes of full data: ${Array.from(data.slice(0, 40)).map(b => b.toString(16).padStart(2, '0')).join(' ')}`);
   console.log(`  Extracted data first 20 bytes: ${Array.from(actualData.slice(0, 20)).map(b => b.toString(16).padStart(2, '0')).join(' ')}`);
   
