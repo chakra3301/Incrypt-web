@@ -194,15 +194,17 @@ export function decodeWithMetadata(data: Uint8Array): { data: Uint8Array; metada
       const mmStart = mmLenOffset + 2;
       const nextOffset = mmStart + mmLen;
       
-      if (fnLen > 0 && fnStart + fnLen <= data.byteOffset + data.byteLength) {
+      // Bounds checks relative to the typed array length (not ArrayBuffer absolute offsets)
+      if (fnLen > 0 && fnStart >= 0 && fnStart + fnLen <= data.length) {
         const fnBytes = data.slice(fnStart, fnStart + fnLen);
         filename = new TextDecoder().decode(fnBytes);
       }
-      if (mmLen > 0 && mmStart + mmLen <= data.byteOffset + data.byteLength) {
+      if (mmLen > 0 && mmStart >= 0 && mmStart + mmLen <= data.length) {
         const mmBytes = data.slice(mmStart, mmStart + mmLen);
         mimeType = new TextDecoder().decode(mmBytes);
       }
-      dataOffset = nextOffset;
+      // Advance dataOffset just past the extra metadata block
+      dataOffset = Math.min(nextOffset, data.length);
     } catch (e) {
       console.warn('Failed to parse extra metadata block, falling back to default offsets');
       dataOffset = 19; // fallback

@@ -206,8 +206,10 @@ self.onmessage = async ({ data }: MessageEvent<DecodeMessage>) => {
         const mmLenOffset = 19 + 2 + fnLen;
         const mmLen = view.getUint16(mmLenOffset, true);
         dataOffset = mmLenOffset + 2 + mmLen;
+        // Clamp to avoid overrun in case of corruption
+        dataOffset = Math.min(dataOffset, fullData.length);
       }
-      actualDataEnd = dataOffset + compressedSize;
+      actualDataEnd = Math.min(dataOffset + compressedSize, fullData.length);
       console.log(`Found STEGO3 header, dataOffset=${dataOffset}, dataSize=${compressedSize}, end=${actualDataEnd}`);
       console.log(`Total extracted: ${fullData.length} bytes, using first ${actualDataEnd} bytes`);
     }
