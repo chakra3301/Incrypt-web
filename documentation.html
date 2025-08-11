@@ -199,58 +199,276 @@
   </header>
 
   <div class="documentation-container">
-    <h1>Incrypt: Web-Based Image Steganography Tool</h1>
-    <p>===========================================</p>
+    <h1>INCRYPT STEGANOGRAPHY APP</h1>
+    <h2>User Guide & Documentation</h2>
     
-    <p>Incrypt allows you to encode secret messages inside images and decode them later using only your browser.</p>
+    <h2>WHAT IS INCRYPT?</h2>
+    <p>Incrypt is a web-based steganography application that allows you to hide secret 
+    data (files or text messages) within PNG images. The hidden data is invisible 
+    to the naked eye and can only be extracted using the app's decode function.</p>
+    
+    <p>Steganography is the practice of concealing information within other non-secret 
+    data or a physical object to avoid detection. In this case, we hide your data 
+    in the least significant bits of image pixels.</p>
 
-    <h2>What Is This?</h2>
-    <p>Incrypt is a client-side steganography tool. It lets you:</p>
+    <h2>FEATURES</h2>
     <ul>
-      <li>Upload an image (PNG/JPG)</li>
-      <li>Hide a secret text message inside that image using the Least Significant Bit (LSB) method</li>
-      <li>Optionally enable <b>pointillist mode</b> for a creative, obfuscated result</li>
-      <li>Download the result</li>
-      <li>Re-upload and decode any stego-image to reveal the hidden message</li>
-    </ul>
-    <p>All processing happens locally in your browser—your data never leaves your device.</p>
-
-    <h2>How To Use It</h2>
-    <ol>
-      <li><b>Upload an Image:</b> Click the "Choose File" button and select any image from your device.</li>
-      <li><b>Enter Your Message:</b> Type the message you want to hide in the textarea below the file input.</li>
-      <li><b>(Optional) Toggle Pointillist Mode:</b> Use the "Use pointillist mode" checkbox to enable or disable the pointillist effect. When enabled, the image will be stylized with colored dots over a darkened version of the original image. The settings for this mode are fixed for maximum compatibility.</li>
-      <li><b>Click Encode:</b> This embeds your message into the image and creates a downloadable link.</li>
-      <li><b>Decode a Stego Image:</b> Upload a previously encoded image and click the Decode button. The hidden message will appear in the output box. The tool automatically detects if pointillist mode was used.</li>
-    </ol>
-
-    <h2>How It Works</h2>
-    <ul>
-      <li>Your message is converted to bytes and its length is stored in the image.</li>
-      <li>The message is encoded into the image's pixel data using the Least Significant Bit (LSB) method.</li>
-      <li>If pointillist mode is enabled, the image is first stylized with colored dots over a darkened version of the original image, then the message is embedded.</li>
-      <li>A 1-byte header is embedded to indicate if pointillist mode was used, so decoding is always automatic and reliable.</li>
+      <li>✓ Hide any file type within PNG images</li>
+      <li>✓ Hide text messages within PNG images</li>
+      <li>✓ Generate random pointillist art if no cover image provided</li>
+      <li>✓ Adjustable data capacity (1-8 bits per color channel)</li>
+      <li>✓ Automatic canvas expansion for large files</li>
+      <li>✓ Quality preservation options</li>
+      <li>✓ Share encoded images to the Incrypt feed</li>
+      <li>✓ Cross-platform web application (works on any device)</li>
     </ul>
 
-    <h2>Output</h2>
+    <h2>HOW TO USE - ENCODING DATA</h2>
+    
+    <h3>1. LAUNCH THE APP</h3>
     <ul>
-      <li>The result is a PNG image with your message embedded.</li>
-      <li>Anyone with this tool can decode the message, regardless of the mode used.</li>
+      <li>Open the Incrypt web application in your browser</li>
+      <li>The app will automatically detect your device's maximum canvas size</li>
     </ul>
 
-    <h2>Privacy & Security</h2>
+    <h3>2. SELECT ENCODE MODE</h3>
     <ul>
-      <li>Completely client-side</li>
-      <li>No data is sent to any server</li>
-      <li>Works offline once loaded</li>
+      <li>Click the "Encode Data → PNG" button</li>
+      <li>This switches the app to encoding mode</li>
     </ul>
 
-    <h2>Tips</h2>
+    <h3>3. CHOOSE A COVER IMAGE (OPTIONAL)</h3>
     <ul>
-      <li>For stealth, use normal mode (pointillist off) for minimal visual change.</li>
-      <li>For obfuscation, use pointillist mode for a creative, artistic look that disguises the message.</li>
-      <li>Avoid overly compressed formats like JPG for encoding, as compression can damage hidden data.</li>
+      <li>Click "Choose Image File" to select a PNG, JPG, or other image format</li>
+      <li>If no image is provided, the app will generate random pointillist art</li>
+      <li>The app shows the data capacity of your selected image</li>
     </ul>
+
+    <h3>4. SELECT DATA TYPE</h3>
+    <ul>
+      <li>File: Choose any file type (.txt, .pdf, .zip, etc.)</li>
+      <li>Text: Type or paste a text message directly</li>
+    </ul>
+
+    <h3>5. CONFIGURE ENCODING SETTINGS</h3>
+    <ul>
+      <li>Bits per channel: Controls how much data can be hidden
+        <ul>
+          <li>1-4 bits: Better image quality, less data capacity</li>
+          <li>5-8 bits: Higher data capacity, may be more noticeable</li>
+        </ul>
+      </li>
+      <li>Preserve quality: Recommended for most uses</li>
+      <li>Auto-expand canvas: Automatically increases image size if needed</li>
+    </ul>
+
+    <h3>6. ENCODE YOUR DATA</h3>
+    <ul>
+      <li>Click "Generate Stego PNG" to start the encoding process</li>
+      <li>Watch the progress bar as your data is hidden</li>
+      <li>The app will create a new PNG file containing your hidden data</li>
+    </ul>
+
+    <h3>7. DOWNLOAD & SHARE</h3>
+    <ul>
+      <li>Download your encoded PNG image</li>
+      <li>Optionally share it to the Incrypt feed</li>
+      <li>The encoded image looks identical to the original (or generated art)</li>
+    </ul>
+
+    <h2>HOW TO USE - DECODING DATA</h2>
+    
+    <h3>1. SWITCH TO DECODE MODE</h3>
+    <ul>
+      <li>Click the "Decode PNG → Data" button</li>
+      <li>This switches the app to decoding mode</li>
+    </ul>
+
+    <h3>2. SELECT ENCODED IMAGE</h3>
+    <ul>
+      <li>Click "Choose PNG File" to select your encoded image</li>
+      <li>The app will automatically detect and extract the hidden data</li>
+    </ul>
+
+    <h3>3. VIEW EXTRACTED DATA</h3>
+    <ul>
+      <li>Text messages are displayed directly in the app</li>
+      <li>Files are automatically downloaded with their original names</li>
+      <li>The app detects file types and suggests appropriate filenames</li>
+    </ul>
+
+    <h2>TECHNICAL DETAILS</h2>
+    
+    <h3>DATA CAPACITY CALCULATION:</h3>
+    <ul>
+      <li>Formula: (width × height × 3 × bits_per_channel) ÷ 8 = bytes</li>
+      <li>Example: 1000×1000 image with 4 bits/channel = 1.5 MB capacity</li>
+      <li>Color channels: Red, Green, Blue (3 channels per pixel)</li>
+    </ul>
+
+    <h3>BITS PER CHANNEL EXPLANATION:</h3>
+    <ul>
+      <li>1 bit: 1/8th of image capacity, minimal quality impact</li>
+      <li>4 bits: 1/2 of image capacity, recommended for quality</li>
+      <li>8 bits: Full image capacity, may be noticeable</li>
+    </ul>
+
+    <h3>CANVAS EXPANSION:</h3>
+    <ul>
+      <li>Automatically increases image dimensions to fit large files</li>
+      <li>Respects browser PNG encoding limits</li>
+      <li>Maintains aspect ratio when possible</li>
+    </ul>
+
+    <h3>SUPPORTED FORMATS:</h3>
+    <ul>
+      <li>Input images: PNG, JPG, GIF, WebP, BMP, TIFF</li>
+      <li>Output: PNG only (required for steganography)</li>
+      <li>Hidden data: Any file type or text</li>
+    </ul>
+
+    <h2>BEST PRACTICES</h2>
+    
+    <h3>FOR ENCODING:</h3>
+    <ul>
+      <li>Use 4 bits or less for important images where quality matters</li>
+      <li>Test with small files first to understand capacity limits</li>
+      <li>Keep original images as backups</li>
+      <li>Use descriptive filenames for encoded images</li>
+    </ul>
+
+    <h3>FOR DECODING:</h3>
+    <ul>
+      <li>Ensure you have the correct encoded image</li>
+      <li>Check that the image wasn't modified (compression can destroy hidden data)</li>
+      <li>Use the same app version if possible</li>
+    </ul>
+
+    <h3>SECURITY CONSIDERATIONS:</h3>
+    <ul>
+      <li>Steganography provides concealment, not encryption</li>
+      <li>Hidden data can be detected by specialized tools</li>
+      <li>Don't rely on this for high-security applications</li>
+      <li>Consider encrypting your data before hiding it</li>
+    </ul>
+
+    <h2>TROUBLESHOOTING</h2>
+    
+    <h3>COMMON ISSUES:</h3>
+    
+    <h4>1. "Data exceeds image capacity"</h4>
+    <ul>
+      <li>Increase bits per channel (up to 8)</li>
+      <li>Use a larger cover image</li>
+      <li>Enable auto-expand canvas</li>
+    </ul>
+
+    <h4>2. "Processing failed" or "Worker error"</h4>
+    <ul>
+      <li>Refresh the page and try again</li>
+      <li>Check file size limits (browsers have memory constraints)</li>
+      <li>Try with a smaller file first</li>
+    </ul>
+
+    <h4>3. "Cannot decode image"</h4>
+    <ul>
+      <li>Ensure the image wasn't compressed or modified</li>
+      <li>Check that you're using the correct encoded image</li>
+      <li>Verify the image format is PNG</li>
+    </ul>
+
+    <h4>4. "App is slow or unresponsive"</h4>
+    <ul>
+      <li>Large files take time to process</li>
+      <li>Close other browser tabs to free memory</li>
+      <li>Wait for the progress bar to complete</li>
+    </ul>
+
+    <h3>PERFORMANCE TIPS:</h3>
+    <ul>
+      <li>Use images under 10MB for faster processing</li>
+      <li>Close unnecessary browser tabs during encoding/decoding</li>
+      <li>For very large files, consider splitting them into smaller parts</li>
+    </ul>
+
+    <h2>SHARING & COLLABORATION</h2>
+    
+    <h3>INCRYPT FEED:</h3>
+    <ul>
+      <li>Share your encoded images with the community</li>
+      <li>Add custom descriptions to explain your work</li>
+      <li>View other users' steganography creations</li>
+      <li>Build a collection of hidden data examples</li>
+    </ul>
+
+    <h3>FILE NAMING CONVENTIONS:</h3>
+    <ul>
+      <li>Use descriptive names: "vacation_photos_hidden.zip.png"</li>
+      <li>Include data type: "secret_message.txt.png"</li>
+      <li>Add version info: "project_v2_final.pdf.png"</li>
+    </ul>
+
+    <h2>ADVANCED USAGE</h2>
+    
+    <h3>BATCH PROCESSING:</h3>
+    <ul>
+      <li>Encode multiple files by processing them one at a time</li>
+      <li>Use consistent settings across related images</li>
+      <li>Keep a log of encoding parameters for reproducibility</li>
+    </ul>
+
+    <h3>QUALITY OPTIMIZATION:</h3>
+    <ul>
+      <li>Test different bit settings to find the sweet spot</li>
+      <li>Compare original vs. encoded images side-by-side</li>
+      <li>Use lossless PNG format for maximum quality preservation</li>
+    </ul>
+
+    <h3>CAPACITY PLANNING:</h3>
+    <ul>
+      <li>Calculate required image size before encoding</li>
+      <li>Plan for future data additions</li>
+      <li>Consider using multiple images for very large files</li>
+    </ul>
+
+    <h2>SUPPORT & COMMUNITY</h2>
+    
+    <h3>OFFICIAL RESOURCES:</h3>
+    <ul>
+      <li>Website: https://www.incrypt.net/</li>
+      <li>Documentation: https://www.incrypt.net/documentation.html</li>
+      <li>Community Feed: https://www.incrypt.net/feed.html</li>
+    </ul>
+
+    <h3>GETTING HELP:</h3>
+    <ul>
+      <li>Check this guide for common solutions</li>
+      <li>Visit the Incrypt website for updates</li>
+      <li>Join the community feed to see examples</li>
+      <li>Report bugs or request features through the official channels</li>
+    </ul>
+
+    <h2>LEGAL & ETHICAL USE</h2>
+    
+    <h3>IMPORTANT REMINDERS:</h3>
+    <ul>
+      <li>Only hide data you own or have permission to hide</li>
+      <li>Don't use steganography for illegal activities</li>
+      <li>Respect copyright and intellectual property rights</li>
+      <li>Be transparent about using steganography when appropriate</li>
+      <li>Consider the ethical implications of hidden data</li>
+    </ul>
+
+    <h3>PRIVACY & SECURITY:</h3>
+    <ul>
+      <li>Steganography provides concealment, not security</li>
+      <li>Hidden data can be discovered by determined adversaries</li>
+      <li>Use encryption for sensitive information</li>
+      <li>Understand the limitations of the technology</li>
+    </ul>
+
+    <hr style="border: 1px solid #333; margin: 2rem 0;">
+    <p style="text-align: center; font-size: 0.9rem; color: #888;">END OF USER GUIDE</p>
   </div>
 
   <script>
